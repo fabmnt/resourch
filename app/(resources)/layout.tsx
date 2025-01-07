@@ -19,7 +19,9 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
           </div>
         </header>
         <div className='container'>
-          <SearchResource />
+          <Suspense>
+            <SearchResource />
+          </Suspense>
         </div>
         <section className='container'>
           <Suspense fallback={<ResourcesSkeleton count={1} />}>
