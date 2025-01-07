@@ -59,7 +59,6 @@ export function CreateResourceForm() {
           />
         </div>
       </div>
-      {JSON.stringify(state, null, 2)}
       <Button
         type='submit'
         className='w-full'
