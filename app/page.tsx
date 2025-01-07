@@ -1,18 +1,19 @@
 import { CreateResource } from '@/components/create-resource'
 import { Resource } from '@/components/resource'
-import { createClient } from '@/utils/supabase/server'
+import { getCurrentUserResources } from '@/app/resources/service'
+import { getUser } from './auth/service'
+import { redirect } from 'next/navigation'
 
 export default async function Home() {
-  const client = await createClient()
-  const { data, error } = await client.from('resources').select('*')
+  const { data } = await getUser()
+  if (data == null) {
+    return redirect('/login')
+  }
+
+  const { data: userResources, error } = await getCurrentUserResources()
 
   if (error) {
     return <div>Error loading resources</div>
-  }
-
-  const resource = data[0]
-  if (resource === undefined) {
-    return <div>No resources found</div>
   }
 
   return (
@@ -26,11 +27,14 @@ export default async function Home() {
           <CreateResource />
         </div>
       </header>
-      <div>
-        <Resource
-          resource={resource}
-          size='large'
-        />
+      <div className='flex flex-col gap-4'>
+        {userResources.map((resource) => (
+          <Resource
+            key={resource.id}
+            resource={resource}
+            size='large'
+          />
+        ))}
       </div>
     </div>
   )
