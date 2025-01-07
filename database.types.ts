@@ -70,6 +70,7 @@ export type Database = {
           id: number
           likes: number
           title: string
+          total_clicks: number | null
           url: string
           user_id: string
         }
@@ -80,6 +81,7 @@ export type Database = {
           id?: number
           likes?: number
           title: string
+          total_clicks?: number | null
           url: string
           user_id: string
         }
@@ -90,6 +92,7 @@ export type Database = {
           id?: number
           likes?: number
           title?: string
+          total_clicks?: number | null
           url?: string
           user_id?: string
         }

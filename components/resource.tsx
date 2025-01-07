@@ -2,10 +2,10 @@
 import { ResourceMenu } from '@/app/resources/components/resource-menu'
 import { Tables } from '@/database.types'
 import { cn } from '@/lib/utils'
-import { ArrowUpRight, Heart } from 'lucide-react'
-import { Button } from './ui/button'
-import { CardRevealedPointer } from './ui/card-revealed-pointer'
+import { ArrowUpRight } from 'lucide-react'
 import { useState } from 'react'
+import { CardRevealedPointer } from './ui/card-revealed-pointer'
+import { addClickToResourceAction } from '@/app/resources/actions'
 
 export type ResourceSize = 'small' | 'medium' | 'large'
 interface ResourceProps {
@@ -19,15 +19,16 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
     <CardRevealedPointer className={cn(size === 'medium' && 'max-w-[400px]')}>
       <article
         className={cn(
-          'relative flex flex-col gap-2 rounded-sm border border-white/10 h-full',
+          'relative flex flex-col rounded-sm border border-white/10 h-full',
           size === 'large' && 'px-3 py-1.5',
           size === 'medium' && 'p-2.5',
-          size === 'small' && 'p-2 gap-0',
+          size === 'small' && 'p-2',
         )}
       >
         <header className='flex flex-col'>
           <div className='flex justify-between items-center'>
             <a
+              onClick={() => addClickToResourceAction(resource)}
               className={cn('flex gap-2 w-fit items-center hover:underline')}
               href={resource.url}
               target='_blank'
@@ -52,12 +53,6 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
               </div>
             </a>
             <div className={cn('flex gap-2 items-center', size === 'small' && 'hidden')}>
-              <Button
-                variant='ghost'
-                size='sm'
-              >
-                <Heart size={16} />
-              </Button>
               <ResourceMenu resource={resource} />
             </div>
           </div>

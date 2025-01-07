@@ -1,16 +1,20 @@
 'use client'
 import { Resource } from '@/components/resource'
 import { DropdownDots } from '@/components/ui/dropdown-dots'
-import { DropdownMenuItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu'
+import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Tables } from '@/database.types'
 import { Minus, Pin } from 'lucide-react'
-import { unpinResourceAction } from '../actions'
+import { unpinAllResourcesAction, unpinResourceAction } from '../actions'
 
 interface PinnedResourcesProps {
   resources: Tables<'resources'>[]
 }
 
 export function PinnedResources({ resources }: PinnedResourcesProps) {
+  if (resources.length === 0) {
+    return null
+  }
+
   return (
     <div className='container'>
       <div className='mb-2 flex items-center justify-between'>
@@ -39,6 +43,8 @@ export function PinnedResources({ resources }: PinnedResourcesProps) {
                 />
               </DropdownMenuItem>
             ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => unpinAllResourcesAction()}>Clear all</DropdownMenuItem>
           </DropdownDots>
         </div>
       </div>

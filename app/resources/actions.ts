@@ -2,7 +2,14 @@
 import { TablesInsert } from '@/database.types'
 import { getUser } from '../auth/service'
 import { resourceSchema } from './schema'
-import { addResourceToPinned, createResource, deleteResource, unpinResource } from './service'
+import {
+  addResourceToPinned,
+  createResource,
+  deleteResource,
+  unpinAllResources,
+  unpinResource,
+  updateResource,
+} from './service'
 import { revalidatePath } from 'next/cache'
 import { getUrlMetadata } from '../metadata/get-url-metadata'
 
@@ -93,6 +100,28 @@ export async function addResourceToPinnedAction(resourceId: number) {
 export async function unpinResourceAction(resourceId: number) {
   const { error } = await unpinResource(resourceId)
 
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  return { message: 'success' }
+}
+
+export async function unpinAllResourcesAction() {
+  const { error } = await unpinAllResources()
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  return { message: 'success' }
+}
+
+export async function addClickToResourceAction(resource: TablesInsert<'resources'>) {
+  resource.total_clicks = (resource.total_clicks ?? 0) + 1
+  const { error } = await updateResource(resource)
   if (error) {
     return { error: error.message }
   }

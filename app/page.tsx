@@ -1,11 +1,11 @@
-import { getPinnedResources, getUserResources } from '@/app/resources/service'
+import { getFeaturedResources, getPinnedResources } from '@/app/resources/service'
 import { CreateResourceDialog } from '@/components/create-resource-dialog'
+import { MainNav } from '@/components/main-nav'
 import { Resource } from '@/components/resource'
 import { SearchResource } from '@/components/ui/search'
 import { redirect } from 'next/navigation'
 import { getUser } from './auth/service'
 import { PinnedResources } from './resources/components/pinned-resources'
-import { MainNav } from '@/components/main-nav'
 
 export default async function Home() {
   const {
@@ -15,7 +15,7 @@ export default async function Home() {
     return redirect('/sign-in')
   }
 
-  const { data: userResources, error: resourcesError } = await getUserResources(user.id)
+  const { data: userResources, error: resourcesError } = await getFeaturedResources(user.id)
   if (resourcesError) {
     return <div>Error loading resources</div>
   }

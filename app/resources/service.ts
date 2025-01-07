@@ -4,7 +4,26 @@ import { getUser } from '../auth/service'
 
 export async function getUserResources(userId: string) {
   const supabase = await createClient()
-  const { data, error } = await supabase.from('resources').select('*').eq('user_id', userId)
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    return { data: null, error }
+  }
+
+  return { data, error: null }
+}
+
+export async function getFeaturedResources(userId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('user_id', userId)
+    .order('total_clicks', { ascending: false })
 
   if (error) {
     return { data: null, error }
@@ -74,4 +93,25 @@ export async function unpinResource(resourceId: number) {
   }
 
   return { error: null }
+}
+
+export async function unpinAllResources() {
+  const supabase = await createClient()
+  const { data: userData, error: userError } = await getUser()
+  if (userError) {
+    return { error: userError }
+  }
+
+  const { error } = await supabase.from('pinned_resources').delete().eq('user_id', userData.user.id)
+
+  if (error) {
+    return { error }
+  }
+
+  return { error: null }
+}
+
+export async function updateResource(resource: TablesInsert<'resources'>) {
+  const supabase = await createClient()
+  return await supabase.from('resources').upsert(resource).single()
 }
