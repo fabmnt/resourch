@@ -5,9 +5,9 @@ import { redirect } from 'next/navigation'
 import { getUser } from './auth/service'
 
 export default async function Home() {
-  const { data } = await getUser()
-  if (data == null) {
-    return redirect('/login')
+  const { data: user } = await getUser()
+  if (user == null) {
+    return redirect('/sign-in')
   }
 
   const { data: userResources, error } = await getCurrentUserResources()
