@@ -1,22 +1,28 @@
-'use client'
+import { getUser } from '@/app/auth/service'
 import { Resource } from '@/components/resource'
 import { DropdownDots } from '@/components/ui/dropdown-dots'
 import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
-import { Tables } from '@/database.types'
 import { Minus, Pin } from 'lucide-react'
+import { redirect } from 'next/navigation'
 import { unpinAllResourcesAction, unpinResourceAction } from '../actions'
+import { getPinnedResources } from '../service'
+import { PinnedActions } from './pinned-actions'
 
-interface PinnedResourcesProps {
-  resources: Tables<'resources'>[]
-}
+export async function PinnedResources() {
+  const {
+    data: { user },
+  } = await getUser()
+  if (user == null) {
+    return redirect('/sign-in')
+  }
+  const { data: pinnedResources } = await getPinnedResources(user.id)
 
-export function PinnedResources({ resources }: PinnedResourcesProps) {
-  if (resources.length === 0) {
+  if (pinnedResources == null || pinnedResources.length === 0) {
     return null
   }
 
   return (
-    <div className='container'>
+    <div>
       <div className='mb-2 flex items-center justify-between'>
         <span>
           <Pin
@@ -25,31 +31,11 @@ export function PinnedResources({ resources }: PinnedResourcesProps) {
           />
         </span>
         <div>
-          <DropdownDots>
-            <DropdownMenuLabel>Unpin resources</DropdownMenuLabel>
-            {resources.map((resource) => (
-              <DropdownMenuItem
-                onClick={() => unpinResourceAction(resource.id)}
-                key={resource.id}
-                className='flex text-xs items-center justify-between gap-2'
-              >
-                <div className='flex flex-col'>
-                  <span className='truncate max-w-[20ch]'>{resource.title}</span>
-                  <span className='text-neutral-400 truncate max-w-[20ch]'>{resource.url}</span>
-                </div>
-                <Minus
-                  size={16}
-                  className='text-destructive'
-                />
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => unpinAllResourcesAction()}>Clear all</DropdownMenuItem>
-          </DropdownDots>
+          <PinnedActions resources={pinnedResources} />
         </div>
       </div>
       <div className='grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2'>
-        {resources.map((resource) => (
+        {pinnedResources.map((resource) => (
           <Resource
             key={resource.id}
             resource={resource}

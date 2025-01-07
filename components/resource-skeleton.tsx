@@ -1,6 +1,10 @@
 import { CardRevealedPointer } from './card-revealed-pointer'
 
-export function ResourceSkeleton() {
+interface ResourceSkeletonProps {
+  size?: 'small' | 'medium' | 'large'
+}
+
+export function ResourceSkeleton({ size = 'small' }: ResourceSkeletonProps) {
   return (
     <CardRevealedPointer>
       <div className='p-4 space-y-4'>
