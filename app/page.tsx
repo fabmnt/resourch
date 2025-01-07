@@ -1,8 +1,8 @@
-import { CreateResource } from '@/components/create-resource'
-import { Resource } from '@/components/resource'
 import { getCurrentUserResources } from '@/app/resources/service'
-import { getUser } from './auth/service'
+import { CreateResourceDialog } from '@/components/create-resource-dialog'
+import { Resource } from '@/components/resource'
 import { redirect } from 'next/navigation'
+import { getUser } from './auth/service'
 
 export default async function Home() {
   const { data } = await getUser()
@@ -24,7 +24,7 @@ export default async function Home() {
           <p className='text-neutral-300'>A site where you can save your links and resources.</p>
         </div>
         <div>
-          <CreateResource />
+          <CreateResourceDialog />
         </div>
       </header>
       <div className='flex flex-col gap-4'>

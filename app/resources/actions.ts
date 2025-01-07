@@ -42,17 +42,22 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   if (URLMetadata.iconURL) {
     newResource['icon_url'] = new URL(url + URLMetadata.iconURL).toString()
   }
+
   if (!newResource.description && URLMetadata.description) {
     newResource.description = URLMetadata.description
   }
-  console.log('newResource', newResource)
+
+  if (!newResource.title && URLMetadata.title) {
+    newResource.title = URLMetadata.title
+  }
+
   const { error } = await createResource(newResource)
   if (error) {
     return { error: error.message }
   }
   revalidatePath('/')
 
-  return { message: 'Resource created successfully' }
+  return { message: 'success' }
 }
 
 export async function deleteResourceAction(resourceId: number) {
@@ -61,5 +66,5 @@ export async function deleteResourceAction(resourceId: number) {
     return { error: error.message }
   }
   revalidatePath('/')
-  return { message: 'Resource deleted successfully' }
+  return { message: 'success' }
 }

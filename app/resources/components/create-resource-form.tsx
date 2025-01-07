@@ -4,11 +4,22 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Clipboard } from 'lucide-react'
 import { createResourceAction } from '../actions'
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
 import { Spinner } from '@/components/ui/spinner'
+import { Textarea } from '@/components/ui/textarea'
 
-export function CreateResourceForm() {
+interface CreateResourceFormProps {
+  onSuccess?: () => void
+}
+
+export function CreateResourceForm({ onSuccess }: CreateResourceFormProps) {
   const [state, formAction, pending] = useActionState(createResourceAction, { message: '' })
+
+  useEffect(() => {
+    if (state.message === 'success') {
+      onSuccess?.()
+    }
+  }, [state])
 
   return (
     <form
@@ -19,13 +30,18 @@ export function CreateResourceForm() {
         <div className='space-y-2'>
           <Label htmlFor='resource-url'>URL</Label>
           <div className='flex rounded-lg shadow-sm shadow-black/5'>
-            <Input
-              id='resource-url'
-              name='resource-url'
-              className='-me-px flex-1 rounded-e-none shadow-none focus-visible:z-10'
-              placeholder='https://www...'
-              type='text'
-            />
+            <div className='relative flex-1'>
+              <Input
+                id='resource-url'
+                name='resource-url'
+                className='peer ps-16 flex-1 rounded-e-none shadow-none focus-visible:z-10'
+                placeholder='google.com'
+                type='text'
+              />
+              <span className='pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm text-muted-foreground peer-disabled:opacity-50'>
+                https://
+              </span>
+            </div>
             <button
               className='inline-flex w-9 items-center justify-center rounded-e-lg border border-input bg-background text-sm text-muted-foreground/80 outline-offset-2 transition-colors hover:bg-accent hover:text-accent-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
               aria-label='Paste URL'
@@ -40,22 +56,20 @@ export function CreateResourceForm() {
           </div>
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='resource-title'>Title</Label>
+          <Label htmlFor='resource-title'>Title (optional)</Label>
           <Input
             id='resource-title'
             name='resource-title'
             placeholder='Rosource title'
             type='text'
-            required
           />
         </div>
         <div className='space-y-2'>
           <Label htmlFor='resource-description'>Description (optional)</Label>
-          <Input
+          <Textarea
             id='resource-description'
             name='resource-description'
             placeholder='A beautiful content that I has to remember...'
-            type='text'
           />
         </div>
       </div>

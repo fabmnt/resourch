@@ -10,10 +10,16 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Plus } from 'lucide-react'
+import { useState } from 'react'
 
-export function CreateResource() {
+export function CreateResourceDialog() {
+  const [isOpen, setOpen] = useState(false)
+
   return (
-    <Dialog>
+    <Dialog
+      open={isOpen}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>
         <Button
           variant='outline'
@@ -27,7 +33,7 @@ export function CreateResource() {
           <DialogTitle className='sm:text-center'>New resource</DialogTitle>
           <DialogDescription className='sm:text-center'>Add a new resource to your collection</DialogDescription>
         </DialogHeader>
-        <CreateResourceForm />
+        <CreateResourceForm onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   )
