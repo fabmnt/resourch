@@ -1,29 +1,20 @@
-import { getFeaturedResources, getPinnedResources } from '@/app/resources/service'
 import { CreateResourceDialog } from '@/components/create-resource-dialog'
-import { MainNav } from '@/components/main-nav'
-import { Resource } from '@/components/resource'
 import { SearchResource } from '@/components/ui/search'
+import { ReactNode } from 'react'
+import { PinnedResources } from './components/pinned-resources'
+import { MainNav } from '@/components/main-nav'
+import { getUser } from '../auth/service'
 import { redirect } from 'next/navigation'
-import { getUser } from './auth/service'
-import { PinnedResources } from './resources/components/pinned-resources'
+import { getPinnedResources } from './service'
 
-export default async function Home() {
+export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
   const {
     data: { user },
   } = await getUser()
   if (user == null) {
     return redirect('/sign-in')
   }
-
-  const { data: userResources, error: resourcesError } = await getFeaturedResources(user.id)
-  if (resourcesError) {
-    return <div>Error loading resources</div>
-  }
-
-  const { data: pinnedResources, error } = await getPinnedResources(user.id)
-  if (error) {
-    return <div>Error loading pinned resources</div>
-  }
+  const { data: pinnedResources } = await getPinnedResources(user.id)
 
   return (
     <div className='flex flex-col gap-y-4 md:gap-y-6 mx-auto max-w-4xl'>
@@ -41,21 +32,13 @@ export default async function Home() {
           <SearchResource />
         </div>
         <section>
-          <PinnedResources resources={pinnedResources} />
+          <PinnedResources resources={pinnedResources ?? []} />
         </section>
       </div>
       <div className='container'>
         <MainNav />
       </div>
-      <div className='container flex flex-col gap-4'>
-        {userResources.map((resource) => (
-          <Resource
-            key={resource.id}
-            resource={resource}
-            size='large'
-          />
-        ))}
-      </div>
+      <div className='container flex flex-col gap-4'>{children}</div>
     </div>
   )
 }

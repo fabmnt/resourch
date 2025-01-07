@@ -1,5 +1,5 @@
 'use client'
-import { CreateResourceForm } from '@/app/resources/components/create-resource-form'
+import { CreateResourceForm } from '@/app/(resources)/components/create-resource-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
