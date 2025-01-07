@@ -29,7 +29,7 @@ export function CardRevealedPointer({
           background: background,
         }}
       />
-      <div>{children}</div>
+      {children}
     </div>
   )
 }

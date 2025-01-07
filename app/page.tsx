@@ -1,4 +1,4 @@
-import { getCurrentUserResources } from '@/app/resources/service'
+import { getPinnedResources, getUserResources } from '@/app/resources/service'
 import { CreateResourceDialog } from '@/components/create-resource-dialog'
 import { Resource } from '@/components/resource'
 import { redirect } from 'next/navigation'
@@ -6,15 +6,21 @@ import { getUser } from './auth/service'
 import { SearchResource } from '@/components/ui/search'
 
 export default async function Home() {
-  const { data: user } = await getUser()
+  const {
+    data: { user },
+  } = await getUser()
   if (user == null) {
     return redirect('/sign-in')
   }
 
-  const { data: userResources, error } = await getCurrentUserResources()
-
-  if (error) {
+  const { data: userResources, error: resourcesError } = await getUserResources(user.id)
+  if (resourcesError) {
     return <div>Error loading resources</div>
+  }
+
+  const { data: pinnedResources, error } = await getPinnedResources(user.id)
+  if (error) {
+    return <div>Error loading pinned resources</div>
   }
 
   return (
@@ -32,6 +38,17 @@ export default async function Home() {
         <div className='container'>
           <SearchResource />
         </div>
+        <section>
+          <div className='container grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2'>
+            {pinnedResources.map((resource) => (
+              <Resource
+                key={resource.id}
+                resource={resource}
+                size='small'
+              />
+            ))}
+          </div>
+        </section>
       </div>
       <div className='container flex flex-col gap-4'>
         {userResources.map((resource) => (

@@ -16,19 +16,19 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
   const [isHovering, setIsHovering] = useState(false)
 
   return (
-    <CardRevealedPointer className={cn(size === 'medium' && 'max-w-[400px]', size === 'small' && 'max-w-fit')}>
+    <CardRevealedPointer className={cn(size === 'medium' && 'max-w-[400px]')}>
       <article
         className={cn(
-          'relative flex flex-col gap-2 rounded-sm border border-white/10',
+          'relative flex flex-col gap-2 rounded-sm border border-white/10 h-full',
           size === 'large' && 'px-3 py-1.5',
           size === 'medium' && 'p-2.5',
-          size === 'small' && 'px-2 py-1.5',
+          size === 'small' && 'p-2 gap-0',
         )}
       >
         <header className='flex flex-col'>
           <div className='flex justify-between items-center'>
             <a
-              className='flex gap-2 w-fit items-center hover:underline'
+              className={cn('flex gap-2 w-fit items-center hover:underline')}
               href={resource.url}
               target='_blank'
               rel='noopener noreferrer'
@@ -38,18 +38,20 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
                   <img
                     src={resource.icon_url}
                     alt={resource.title + 'logo'}
-                    width={24}
-                    height={24}
-                    className='aspect-square'
+                    width='24'
+                    height='24'
+                    className='aspect-square size-6'
                   />
                 )}
-                <h6 className='font-medium tracking-wide'>{resource.title}</h6>
+                <h6 className={cn('font-medium tracking-wide', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
+                  {resource.title}
+                </h6>
               </div>
-              <div>
+              <div className={cn(size === 'small' && 'hidden')}>
                 <ArrowUpRight size={16} />
               </div>
             </a>
-            <div className='flex gap-2 items-center'>
+            <div className={cn('flex gap-2 items-center', size === 'small' && 'hidden')}>
               <Button
                 variant='ghost'
                 size='sm'
@@ -60,7 +62,7 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
             </div>
           </div>
           <div>
-            <p className='text-xs text-neutral-500'>
+            <p className={cn('text-xs text-neutral-500', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
               {new URL(resource.url).toString().replace('https://', '').replace('www.', '')}
             </p>
           </div>

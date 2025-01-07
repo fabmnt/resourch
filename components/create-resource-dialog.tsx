@@ -27,7 +27,7 @@ export function CreateResourceDialog() {
           variant='outline'
           className='flex-row gap-2 items-center'
         >
-          Nuevo <Plus size={16} />
+          New <Plus size={16} />
         </Button>
       </DialogTrigger>
       <DialogContent>

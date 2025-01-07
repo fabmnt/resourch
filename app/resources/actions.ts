@@ -2,7 +2,7 @@
 import { TablesInsert } from '@/database.types'
 import { getUser } from '../auth/service'
 import { resourceSchema } from './schema'
-import { createResource, deleteResource } from './service'
+import { addResourceToPinned, createResource, deleteResource } from './service'
 import { revalidatePath } from 'next/cache'
 import { getUrlMetadata } from '../metadata/get-url-metadata'
 
@@ -76,6 +76,16 @@ export async function deleteResourceAction(resourceId: number) {
   if (error) {
     return { error: error.message }
   }
+  revalidatePath('/')
+  return { message: 'success' }
+}
+
+export async function addResourceToPinnedAction(resourceId: number) {
+  const { error } = await addResourceToPinned(resourceId)
+  if (error) {
+    return { error: error.message }
+  }
+
   revalidatePath('/')
   return { message: 'success' }
 }
