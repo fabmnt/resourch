@@ -1,9 +1,11 @@
 import { getPinnedResources, getUserResources } from '@/app/resources/service'
 import { CreateResourceDialog } from '@/components/create-resource-dialog'
 import { Resource } from '@/components/resource'
+import { SearchResource } from '@/components/ui/search'
 import { redirect } from 'next/navigation'
 import { getUser } from './auth/service'
-import { SearchResource } from '@/components/ui/search'
+import { PinnedResources } from './resources/components/pinned-resources'
+import { MainNav } from '@/components/main-nav'
 
 export default async function Home() {
   const {
@@ -39,16 +41,11 @@ export default async function Home() {
           <SearchResource />
         </div>
         <section>
-          <div className='container grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2'>
-            {pinnedResources.map((resource) => (
-              <Resource
-                key={resource.id}
-                resource={resource}
-                size='small'
-              />
-            ))}
-          </div>
+          <PinnedResources resources={pinnedResources} />
         </section>
+      </div>
+      <div className='container'>
+        <MainNav />
       </div>
       <div className='container flex flex-col gap-4'>
         {userResources.map((resource) => (

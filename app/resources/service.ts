@@ -55,3 +55,23 @@ export async function getPinnedResources(userId: string) {
   const resources = data.map((pinnedResource) => pinnedResource.resources)
   return { data: resources, error: null }
 }
+
+export async function unpinResource(resourceId: number) {
+  const supabase = await createClient()
+  const { data: userData, error: userError } = await getUser()
+  if (userError) {
+    return { error: userError }
+  }
+
+  const { error } = await supabase
+    .from('pinned_resources')
+    .delete()
+    .eq('user_id', userData.user.id)
+    .eq('resource_id', resourceId)
+
+  if (error) {
+    return { error }
+  }
+
+  return { error: null }
+}

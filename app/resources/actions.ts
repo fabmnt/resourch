@@ -2,7 +2,7 @@
 import { TablesInsert } from '@/database.types'
 import { getUser } from '../auth/service'
 import { resourceSchema } from './schema'
-import { addResourceToPinned, createResource, deleteResource } from './service'
+import { addResourceToPinned, createResource, deleteResource, unpinResource } from './service'
 import { revalidatePath } from 'next/cache'
 import { getUrlMetadata } from '../metadata/get-url-metadata'
 
@@ -20,7 +20,7 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   const validatedResource = resourceSchema.safeParse(rawFormData)
   if (!validatedResource.success) {
     return {
-      error: 'Invalid data',
+      error: validatedResource.error.message,
     }
   }
 
@@ -82,6 +82,17 @@ export async function deleteResourceAction(resourceId: number) {
 
 export async function addResourceToPinnedAction(resourceId: number) {
   const { error } = await addResourceToPinned(resourceId)
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  return { message: 'success' }
+}
+
+export async function unpinResourceAction(resourceId: number) {
+  const { error } = await unpinResource(resourceId)
+
   if (error) {
     return { error: error.message }
   }
