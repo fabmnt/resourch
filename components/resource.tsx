@@ -60,7 +60,9 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
             </div>
           </div>
           <div>
-            <p className='text-xs text-neutral-500'>{new URL(resource.url).hostname.replace('www.', '')}</p>
+            <p className='text-xs text-neutral-500'>
+              {new URL(resource.url).toString().replace('https://', '').replace('www.', '')}
+            </p>
           </div>
         </header>
         <div

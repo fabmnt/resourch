@@ -26,7 +26,7 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
       return
     }
     const urlInput = document.getElementById('resource-url') as HTMLInputElement
-    urlInput.value = url.hostname
+    urlInput.value = rawUrl.replace('https://', '')
   }
 
   useEffect(() => {

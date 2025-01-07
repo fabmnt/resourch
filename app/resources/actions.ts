@@ -23,7 +23,7 @@ export async function createResourceAction(prevState: any, formData: FormData) {
       error: 'Invalid data',
     }
   }
-  validatedResource.data.url = new URL(validatedResource.data.url).origin
+
   const { data: user, error: userError } = await getUser()
   if (userError) {
     return { error: userError.message }
@@ -45,7 +45,8 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   }
 
   if (URLMetadata.iconURL?.startsWith('/')) {
-    newResource['icon_url'] = new URL(url + URLMetadata.iconURL).toString()
+    const origin = new URL(url).origin
+    newResource['icon_url'] = new URL(origin + URLMetadata.iconURL).toString()
   } else {
     newResource['icon_url'] = URLMetadata.iconURL
   }
