@@ -23,7 +23,7 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
     }
 
     if (state.error != null) {
-      onError?.(`An error occurred while creating the resource.\n${state.error}`)
+      onError?.(`An error occurred while creating the resource:\n${state.error}.`)
     }
   }, [state])
 

@@ -37,7 +37,12 @@ export async function createResourceAction(prevState: any, formData: FormData) {
     data: { url },
   } = validatedResource
 
-  const URLMetadata = await getUrlMetadata(url)
+  let URLMetadata
+  try {
+    URLMetadata = await getUrlMetadata(url)
+  } catch (error) {
+    return { error: 'Error getting URL metadata' }
+  }
 
   if (URLMetadata.iconURL) {
     newResource['icon_url'] = new URL(url + URLMetadata.iconURL).toString()
