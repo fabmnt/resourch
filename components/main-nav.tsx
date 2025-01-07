@@ -33,39 +33,6 @@ export function MainNav() {
           Recent
         </Link>
       </Button>
-      <Button
-        variant='outline'
-        asChild
-      >
-        <Link
-          href='/all'
-          className={cn(pathname === '/all' && 'bg-muted shadow-none')}
-        >
-          All
-        </Link>
-      </Button>
     </nav>
   )
 }
-;<Tabs defaultValue='tab-1'>
-  <TabsList className='bg-transparent'>
-    <TabsTrigger
-      value='tab-1'
-      className='data-[state=active]:bg-muted data-[state=active]:shadow-none'
-    >
-      Tab 1
-    </TabsTrigger>
-    <TabsTrigger
-      value='tab-2'
-      className='data-[state=active]:bg-muted data-[state=active]:shadow-none'
-    >
-      Tab 2
-    </TabsTrigger>
-    <TabsTrigger
-      value='tab-3'
-      className='data-[state=active]:bg-muted data-[state=active]:shadow-none'
-    >
-      Tab 3
-    </TabsTrigger>
-  </TabsList>
-</Tabs>

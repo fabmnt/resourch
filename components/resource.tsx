@@ -4,7 +4,7 @@ import { Tables } from '@/database.types'
 import { cn } from '@/lib/utils'
 import { ArrowUpRight } from 'lucide-react'
 import { useState } from 'react'
-import { CardRevealedPointer } from './ui/card-revealed-pointer'
+import { CardRevealedPointer } from './card-revealed-pointer'
 import { addClickToResourceAction } from '@/app/(resources)/actions'
 
 export type ResourceSize = 'small' | 'medium' | 'large'

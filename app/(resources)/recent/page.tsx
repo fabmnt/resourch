@@ -1,19 +1,15 @@
-import { Resource } from '@/components/resource'
-import { createClient } from '@/utils/supabase/server'
+import { getUser } from '@/app/auth/service'
+import { getUserResources } from '../service'
 import { redirect } from 'next/navigation'
-import { getFeaturedResources } from './service'
+import { Resource } from '@/components/resource'
 
 export default async function Page() {
-  const supabase = await createClient()
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  const user = session?.user
+  const { data } = await getUser()
+  const { user } = data
   if (user == null) {
     return redirect('/sign-in')
   }
-
-  const { data: userResources } = await getFeaturedResources(user.id)
+  const { data: userResources } = await getUserResources(user.id)
 
   return (
     <div className='flex flex-col gap-4'>
