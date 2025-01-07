@@ -1,12 +1,11 @@
+'use client'
+import { ResourceMenu } from '@/app/resources/components/resource-menu'
 import { Tables } from '@/database.types'
 import { cn } from '@/lib/utils'
-import { ArrowUpRight, Heart, Trash } from 'lucide-react'
+import { ArrowUpRight, Heart } from 'lucide-react'
 import { Button } from './ui/button'
 import { CardRevealedPointer } from './ui/card-revealed-pointer'
-import { DropdownDots } from './ui/dropdown-dots'
-import { DropdownMenuItem } from './ui/dropdown-menu'
-import { deleteResourceAction } from '@/app/resources/actions'
-import { ResourceMenu } from '@/app/resources/components/resource-menu'
+import { useState } from 'react'
 
 export type ResourceSize = 'small' | 'medium' | 'large'
 interface ResourceProps {
@@ -14,13 +13,15 @@ interface ResourceProps {
   size?: ResourceSize
 }
 export function Resource({ resource, size = 'medium' }: ResourceProps) {
+  const [isHovering, setIsHovering] = useState(false)
+
   return (
     <CardRevealedPointer className={cn(size === 'medium' && 'max-w-[400px]', size === 'small' && 'max-w-fit')}>
       <article
         className={cn(
           'relative flex flex-col gap-2 rounded-sm border border-white/10',
-          size === 'large' && 'px-3 py-4',
-          size === 'medium' && 'p-3',
+          size === 'large' && 'px-3 py-1.5',
+          size === 'medium' && 'p-2.5',
           size === 'small' && 'px-2 py-1.5',
         )}
       >
@@ -62,8 +63,13 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
             <p className='text-xs text-neutral-500'>{new URL(resource.url).hostname.replace('www.', '')}</p>
           </div>
         </header>
-        <div>
-          <p className={cn('text-sm text-neutral-300', size === 'small' && 'hidden')}>{resource.description}</p>
+        <div
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+        >
+          <p className={cn('text-sm text-neutral-300', size === 'small' && 'hidden', !isHovering && 'truncate')}>
+            {resource.description}
+          </p>
         </div>
       </article>
     </CardRevealedPointer>

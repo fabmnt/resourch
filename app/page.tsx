@@ -3,6 +3,7 @@ import { CreateResourceDialog } from '@/components/create-resource-dialog'
 import { Resource } from '@/components/resource'
 import { redirect } from 'next/navigation'
 import { getUser } from './auth/service'
+import { SearchResource } from '@/components/ui/search'
 
 export default async function Home() {
   const { data: user } = await getUser()
@@ -27,6 +28,9 @@ export default async function Home() {
           <CreateResourceDialog />
         </div>
       </header>
+      <div>
+        <SearchResource />
+      </div>
       <div className='flex flex-col gap-4'>
         {userResources.map((resource) => (
           <Resource

@@ -16,6 +16,19 @@ interface CreateResourceFormProps {
 export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormProps) {
   const [state, formAction, pending] = useActionState(createResourceAction, { message: '' })
 
+  const handlePasteContent = async () => {
+    const clipboardContent = await navigator.clipboard.readText()
+    const rawUrl = clipboardContent.startsWith('https://') ? clipboardContent : `https://${clipboardContent}`
+    let url
+    try {
+      url = new URL(rawUrl)
+    } catch {
+      return
+    }
+    const urlInput = document.getElementById('resource-url') as HTMLInputElement
+    urlInput.value = url.hostname
+  }
+
   useEffect(() => {
     if (state.message === 'success') {
       onSuccess?.()
@@ -49,6 +62,7 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
               </span>
             </div>
             <button
+              onClick={handlePasteContent}
               className='inline-flex w-9 items-center justify-center rounded-e-lg border border-input bg-background text-sm text-muted-foreground/80 outline-offset-2 transition-colors hover:bg-accent hover:text-accent-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
               aria-label='Paste URL'
               type='button'
