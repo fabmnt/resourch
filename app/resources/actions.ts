@@ -44,8 +44,10 @@ export async function createResourceAction(prevState: any, formData: FormData) {
     return { error: 'Error getting URL metadata' }
   }
 
-  if (URLMetadata.iconURL) {
+  if (URLMetadata.iconURL?.startsWith('/')) {
     newResource['icon_url'] = new URL(url + URLMetadata.iconURL).toString()
+  } else {
+    newResource['icon_url'] = URLMetadata.iconURL
   }
 
   if (!newResource.description && URLMetadata.description) {
