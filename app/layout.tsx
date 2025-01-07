@@ -2,6 +2,7 @@ import { ThemeProvider } from 'next-themes'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
+import { NuqsAdapter } from 'nuqs/adapters/next'
 
 const defaultUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
@@ -28,14 +29,16 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className='bg-background text-foreground'>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className='min-h-screen w-full'>{children}</main>
-        </ThemeProvider>
+        <NuqsAdapter>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+            <main className='min-h-screen w-full'>{children}</main>
+          </ThemeProvider>
+        </NuqsAdapter>
         <Toaster />
       </body>
     </html>

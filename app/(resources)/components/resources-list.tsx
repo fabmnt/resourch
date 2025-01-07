@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { getFeaturedResources, getUserResources } from '../service'
 
-export async function FeaturedResources() {
+export async function FeaturedResources({ q }: { q: string }) {
   const supabase = await createClient()
   const {
     data: { session },
@@ -13,7 +13,7 @@ export async function FeaturedResources() {
     return redirect('/sign-in')
   }
 
-  const { data: userResources } = await getFeaturedResources(user.id)
+  const { data: userResources } = await getFeaturedResources(user.id, q)
 
   return (
     <div className='flex flex-col gap-4'>
@@ -28,7 +28,7 @@ export async function FeaturedResources() {
   )
 }
 
-export async function RecentResources() {
+export async function RecentResources({ q }: { q: string }) {
   const supabase = await createClient()
   const {
     data: { session },
@@ -38,7 +38,7 @@ export async function RecentResources() {
     return redirect('/sign-in')
   }
 
-  const { data: userResources } = await getUserResources(user.id)
+  const { data: userResources } = await getUserResources(user.id, q)
 
   return (
     <div className='flex flex-col gap-4'>

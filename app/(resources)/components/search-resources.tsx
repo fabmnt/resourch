@@ -1,12 +1,19 @@
+'use client'
+
 import { Input } from '@/components/ui/input'
 import { ArrowRight, Search } from 'lucide-react'
+import { useQuerySearchParams } from '../hooks/use-search-params'
 
 export function SearchResource() {
+  const { searchQuery, setSearchQueryDebounced } = useQuerySearchParams()
+
   return (
     <div className='space-y-2'>
       <div className='relative'>
         <Input
           id='input-26'
+          defaultValue={searchQuery}
+          onChange={(e) => setSearchQueryDebounced(e.target.value)}
           className='peer pe-9 ps-9'
           placeholder='Search...'
           type='search'

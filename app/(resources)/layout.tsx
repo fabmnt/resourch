@@ -1,7 +1,7 @@
 import { CreateResourceDialog } from '@/components/create-resource-dialog'
 import { MainNav } from '@/components/main-nav'
 import { ResourcesSkeleton } from '@/components/resource-skeleton'
-import { SearchResource } from '@/components/ui/search'
+import { SearchResource } from '@/app/(resources)/components/search-resources'
 import { ReactNode, Suspense } from 'react'
 import { PinnedResources } from './components/pinned-resources'
 
@@ -26,9 +26,9 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
             <PinnedResources />
           </Suspense>
         </section>
-      </div>
-      <div className='container'>
-        <MainNav />
+        <div className='container'>
+          <MainNav />
+        </div>
       </div>
       <div className='container flex flex-col gap-4'>{children}</div>
     </div>

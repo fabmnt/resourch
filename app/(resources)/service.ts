@@ -2,12 +2,13 @@ import { TablesInsert } from '@/database.types'
 import { createClient } from '@/utils/supabase/server'
 import { getUser } from '../auth/service'
 
-export async function getUserResources(userId: string) {
+export async function getUserResources(userId: string, q = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
     .select('*')
     .eq('user_id', userId)
+    .ilike('title', `%${q}%`)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -17,12 +18,13 @@ export async function getUserResources(userId: string) {
   return { data, error: null }
 }
 
-export async function getFeaturedResources(userId: string) {
+export async function getFeaturedResources(userId: string, query = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
     .select('*')
     .eq('user_id', userId)
+    .ilike('title', `%${query}%`)
     .order('total_clicks', { ascending: false })
 
   if (error) {
