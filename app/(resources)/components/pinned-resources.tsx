@@ -1,10 +1,7 @@
 import { getUser } from '@/app/auth/service'
 import { Resource } from '@/components/resource'
-import { DropdownDots } from '@/components/ui/dropdown-dots'
-import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
-import { Minus, Pin } from 'lucide-react'
+import { Pin } from 'lucide-react'
 import { redirect } from 'next/navigation'
-import { unpinAllResourcesAction, unpinResourceAction } from '../actions'
 import { getPinnedResources } from '../service'
 import { PinnedActions } from './pinned-actions'
 
