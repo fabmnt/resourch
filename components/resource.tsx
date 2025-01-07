@@ -18,46 +18,53 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
     <CardRevealedPointer className={cn(size === 'medium' && 'max-w-[400px]', size === 'small' && 'max-w-fit')}>
       <article
         className={cn(
-          'relative flex flex-col gap-1 rounded-sm border border-white/10',
+          'relative flex flex-col gap-2 rounded-sm border border-white/10',
           size === 'large' && 'px-3 py-4',
           size === 'medium' && 'p-3',
           size === 'small' && 'px-2 py-1.5',
         )}
       >
-        <header className='flex justify-between items-center'>
-          <a
-            className='flex gap-2 w-fit items-center hover:underline'
-            href={resource.url}
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <div className='flex gap-2 items-center'>
-              {resource.icon_url && (
-                <img
-                  src={resource.icon_url}
-                  alt={resource.title + 'logo'}
-                  width={24}
-                  height={24}
-                  className='aspect-square'
-                />
-              )}
-              <h6 className='font-medium tracking-wide'>{resource.title}</h6>
-            </div>
-            <div>
-              <ArrowUpRight size={16} />
-            </div>
-          </a>
-          <div className='flex gap-2 items-center'>
-            <Button
-              variant='ghost'
-              size='sm'
+        <header className='flex flex-col'>
+          <div className='flex justify-between items-center'>
+            <a
+              className='flex gap-2 w-fit items-center hover:underline'
+              href={resource.url}
+              target='_blank'
+              rel='noopener noreferrer'
             >
-              <Heart size={16} />
-            </Button>
-            <ResourceMenu resource={resource} />
+              <div className='flex gap-2 items-center'>
+                {resource.icon_url && (
+                  <img
+                    src={resource.icon_url}
+                    alt={resource.title + 'logo'}
+                    width={24}
+                    height={24}
+                    className='aspect-square'
+                  />
+                )}
+                <h6 className='font-medium tracking-wide'>{resource.title}</h6>
+              </div>
+              <div>
+                <ArrowUpRight size={16} />
+              </div>
+            </a>
+            <div className='flex gap-2 items-center'>
+              <Button
+                variant='ghost'
+                size='sm'
+              >
+                <Heart size={16} />
+              </Button>
+              <ResourceMenu resource={resource} />
+            </div>
+          </div>
+          <div>
+            <p className='text-xs text-neutral-500'>{new URL(resource.url).hostname.replace('www.', '')}</p>
           </div>
         </header>
-        <p className={cn('text-sm text-neutral-300', size === 'small' && 'hidden')}>{resource.description}</p>
+        <div>
+          <p className={cn('text-sm text-neutral-300', size === 'small' && 'hidden')}>{resource.description}</p>
+        </div>
       </article>
     </CardRevealedPointer>
   )
