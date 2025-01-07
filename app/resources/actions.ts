@@ -44,11 +44,14 @@ export async function createResourceAction(prevState: any, formData: FormData) {
     return { error: 'Error getting URL metadata' }
   }
 
-  if (URLMetadata.iconURL?.startsWith('/')) {
-    const origin = new URL(url).origin
-    newResource['icon_url'] = new URL(origin + URLMetadata.iconURL).toString()
-  } else {
-    newResource['icon_url'] = URLMetadata.iconURL
+  if (URLMetadata.iconURL != null) {
+    if (!URLMetadata.iconURL.startsWith('https://')) {
+      const origin = new URL(url).origin
+      const iconURL = URLMetadata.iconURL?.startsWith('/') ? URLMetadata.iconURL : '/' + URLMetadata.iconURL
+      newResource['icon_url'] = new URL(origin + iconURL).toString()
+    } else {
+      newResource['icon_url'] = URLMetadata.iconURL
+    }
   }
 
   if (!newResource.description && URLMetadata.description) {
