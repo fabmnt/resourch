@@ -14,7 +14,7 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   const rawFormData = {
     url: formDataUrl,
     title: formData.get('resource-title')?.toString(),
-    description: formData.get('description')?.toString(),
+    description: formData.get('resource-description')?.toString(),
   }
 
   const validatedResource = resourceSchema.safeParse(rawFormData)
@@ -42,7 +42,7 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   if (URLMetadata.iconURL) {
     newResource['icon_url'] = new URL(url + URLMetadata.iconURL).toString()
   }
-  if (newResource.description == null && URLMetadata.description) {
+  if (!newResource.description && URLMetadata.description) {
     newResource.description = URLMetadata.description
   }
   console.log('newResource', newResource)
