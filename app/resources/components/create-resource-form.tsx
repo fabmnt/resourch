@@ -10,14 +10,20 @@ import { Textarea } from '@/components/ui/textarea'
 
 interface CreateResourceFormProps {
   onSuccess?: () => void
+  onError?: (error: string) => void
 }
 
-export function CreateResourceForm({ onSuccess }: CreateResourceFormProps) {
+export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormProps) {
   const [state, formAction, pending] = useActionState(createResourceAction, { message: '' })
 
   useEffect(() => {
     if (state.message === 'success') {
       onSuccess?.()
+      return
+    }
+
+    if (state.error != null) {
+      onError?.(`An error occurred while creating the resource.\n${state.error}`)
     }
   }, [state])
 
