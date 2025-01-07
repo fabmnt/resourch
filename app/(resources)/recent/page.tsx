@@ -1,25 +1,11 @@
-import { getUser } from '@/app/auth/service'
-import { getUserResources } from '../service'
-import { redirect } from 'next/navigation'
-import { Resource } from '@/components/resource'
+import { ResourcesSkeleton } from '@/components/resource-skeleton'
+import { Suspense } from 'react'
+import { RecentResources } from '../components/resources-list'
 
-export default async function Page() {
-  const { data } = await getUser()
-  const { user } = data
-  if (user == null) {
-    return redirect('/sign-in')
-  }
-  const { data: userResources } = await getUserResources(user.id)
-
+export default function Page() {
   return (
-    <div className='flex flex-col gap-4'>
-      {userResources?.map((resource) => (
-        <Resource
-          key={resource.id}
-          resource={resource}
-          size='large'
-        />
-      ))}
-    </div>
+    <Suspense fallback={<ResourcesSkeleton count={5} />}>
+      <RecentResources />
+    </Suspense>
   )
 }
