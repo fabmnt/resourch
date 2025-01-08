@@ -24,6 +24,7 @@ export function SharedDialog() {
     if (sharedParam == null) {
       return
     }
+
     const supabase = createClient()
     supabase
       .from('resources')

@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { NuqsAdapter } from 'nuqs/adapters/next'
 import { SharedDialog } from './(resources)/components/shared-dialog'
 import { Suspense } from 'react'
+import { ShareResourceDialog } from './(resources)/components/share-resource-dialog'
 
 const defaultUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
@@ -41,6 +42,7 @@ export default function RootLayout({
             <main className='min-h-screen w-full'>{children}</main>
             <Suspense>
               <SharedDialog />
+              <ShareResourceDialog />
             </Suspense>
           </ThemeProvider>
         </NuqsAdapter>
