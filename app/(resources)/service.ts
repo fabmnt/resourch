@@ -2,13 +2,15 @@ import { TablesInsert } from '@/database.types'
 import { createClient } from '@/utils/supabase/server'
 import { getUser } from '../auth/service'
 
-export async function getUserResources(userId: string, q = '') {
+export async function getUserResources(userId: string, query = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
     .select('*')
     .eq('user_id', userId)
-    .ilike('title', `%${q}%`)
+    .ilike('title', `%${query}%`)
+    .ilike('description', `%${query}%`)
+    .ilike('url', `%${query}%`)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -25,6 +27,8 @@ export async function getFeaturedResources(userId: string, query = '') {
     .select('*')
     .eq('user_id', userId)
     .ilike('title', `%${query}%`)
+    .ilike('description', `%${query}%`)
+    .ilike('url', `%${query}%`)
     .order('total_clicks', { ascending: false })
 
   if (error) {
