@@ -14,11 +14,13 @@ import { createClient } from '@/utils/supabase/client'
 import { useQueryState } from 'nuqs'
 import { useEffect, useState } from 'react'
 import { saveSharedResourceAction } from '../actions'
+import { useToast } from '@/hooks/use-toast'
 
 export function SharedDialog() {
   const [sharedParam, setSharedParam] = useQueryState('shared')
   const [isOpen, setIsOpen] = useState(() => sharedParam != null)
   const [resource, setResource] = useState<Tables<'resources'> | undefined>()
+  const { toast } = useToast()
 
   useEffect(() => {
     if (sharedParam == null) {
@@ -58,10 +60,25 @@ export function SharedDialog() {
       created_at: undefined,
       is_pinned: false,
     }
-    saveSharedResourceAction(newResource).finally(() => {
-      setIsOpen(false)
-      setSharedParam(null)
-    })
+    saveSharedResourceAction(newResource)
+      .then(({ error }) => {
+        if (error) {
+          toast({
+            title: 'Error',
+            description: error,
+          })
+          return
+        }
+
+        toast({
+          title: 'Success',
+          description: 'Resource saved successfully',
+        })
+      })
+      .finally(() => {
+        setIsOpen(false)
+        setSharedParam(null)
+      })
   }
 
   return (
