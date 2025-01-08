@@ -3,7 +3,7 @@ import { TablesInsert } from '@/database.types'
 import { getUser } from '../auth/service'
 import { resourceSchema } from './schema'
 import {
-  addResourceToPinned,
+  pinResource,
   createResource,
   deleteResource,
   unpinAllResources,
@@ -88,7 +88,7 @@ export async function deleteResourceAction(resourceId: number) {
 }
 
 export async function addResourceToPinnedAction(resourceId: number) {
-  const { error } = await addResourceToPinned(resourceId)
+  const { error } = await pinResource(resourceId)
   if (error) {
     return { error: error.message }
   }

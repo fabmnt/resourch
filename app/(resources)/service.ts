@@ -44,7 +44,7 @@ export async function deleteResource(resourceId: number) {
   return await supabase.from('resources').delete().eq('id', resourceId)
 }
 
-export async function addResourceToPinned(resourceId: number) {
+export async function pinResource(resourceId: number) {
   const supabase = await createClient()
   const { data: userData, error: userError } = await getUser()
   if (userError) {
@@ -55,6 +55,7 @@ export async function addResourceToPinned(resourceId: number) {
     .from('resources')
     .update({
       is_pinned: true,
+      pinned_at: new Date().toISOString(),
     })
     .eq('id', resourceId)
     .eq('user_id', userData.user.id)
@@ -68,7 +69,12 @@ export async function addResourceToPinned(resourceId: number) {
 
 export async function getPinnedResources(userId: string) {
   const supabase = await createClient()
-  const { data, error } = await supabase.from('resources').select('*').eq('user_id', userId).eq('is_pinned', true)
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('is_pinned', true)
+    .order('pinned_at', { ascending: true })
 
   if (error) {
     return { data: null, error }
@@ -87,6 +93,7 @@ export async function unpinResource(resourceId: number) {
     .from('resources')
     .update({
       is_pinned: false,
+      pinned_at: null,
     })
     .eq('user_id', userData.user.id)
     .eq('resource_id', resourceId)
@@ -109,6 +116,7 @@ export async function unpinAllResources() {
     .from('resources')
     .update({
       is_pinned: false,
+      pinned_at: null,
     })
     .eq('user_id', userData.user.id)
 

@@ -41,6 +41,7 @@ export type Database = {
           id: number
           is_pinned: boolean
           likes: number
+          pinned_at: string | null
           title: string
           total_clicks: number | null
           url: string
@@ -53,6 +54,7 @@ export type Database = {
           id?: number
           is_pinned?: boolean
           likes?: number
+          pinned_at?: string | null
           title: string
           total_clicks?: number | null
           url: string
@@ -65,6 +67,7 @@ export type Database = {
           id?: number
           is_pinned?: boolean
           likes?: number
+          pinned_at?: string | null
           title?: string
           total_clicks?: number | null
           url?: string
