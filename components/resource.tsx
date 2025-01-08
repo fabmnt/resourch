@@ -44,7 +44,12 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
                     className='aspect-square size-6'
                   />
                 )}
-                <h6 className={cn('font-medium tracking-wide', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
+                <h6
+                  className={cn(
+                    'font-medium tracking-wide md:max-w-full max-w-[10ch] truncate',
+                    size === 'small' && 'text-sm md:max-w-[10ch]',
+                  )}
+                >
                   {resource.title}
                 </h6>
               </div>
