@@ -56,6 +56,7 @@ export function SharedDialog() {
       ...resource,
       id: undefined,
       created_at: undefined,
+      is_pinned: false,
     }
     saveSharedResourceAction(newResource).finally(() => {
       setIsOpen(false)
