@@ -14,6 +14,10 @@ interface ResourceProps {
 }
 export function Resource({ resource, size = 'medium' }: ResourceProps) {
   const [isHovering, setIsHovering] = useState(false)
+  let displayableURL = new URL(resource.url).toString().replace('https://', '').replace('www.', '')
+  if (displayableURL.endsWith('/')) {
+    displayableURL = displayableURL.slice(0, -1)
+  }
 
   return (
     <CardRevealedPointer className={cn(size === 'medium' && 'max-w-[400px]')}>
@@ -63,7 +67,7 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
           </div>
           <div>
             <p className={cn('text-xs text-neutral-400', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
-              {new URL(resource.url).toString().replace('https://', '').replace('www.', '')}
+              {displayableURL}
             </p>
           </div>
         </header>

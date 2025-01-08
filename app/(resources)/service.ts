@@ -96,7 +96,7 @@ export async function unpinResource(resourceId: number) {
       pinned_at: null,
     })
     .eq('user_id', userData.user.id)
-    .eq('resource_id', resourceId)
+    .eq('id', resourceId)
 
   if (error) {
     return { error }
