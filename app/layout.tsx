@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { NuqsAdapter } from 'nuqs/adapters/next'
+import { SharedDialog } from './(resources)/components/shared-dialog'
 
 const defaultUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
@@ -37,6 +38,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <main className='min-h-screen w-full'>{children}</main>
+            <SharedDialog />
           </ThemeProvider>
         </NuqsAdapter>
         <Toaster />

@@ -11,8 +11,9 @@ export type ResourceSize = 'small' | 'medium' | 'large'
 interface ResourceProps {
   resource: Tables<'resources'>
   size?: ResourceSize
+  readonly?: boolean
 }
-export function Resource({ resource, size = 'medium' }: ResourceProps) {
+export function Resource({ resource, size = 'medium', readonly = false }: ResourceProps) {
   const [isHovering, setIsHovering] = useState(false)
   let displayableURL = new URL(resource.url).toString().replace('https://', '').replace('www.', '')
   if (displayableURL.endsWith('/')) {
@@ -20,11 +21,11 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
   }
 
   return (
-    <CardRevealedPointer className={cn(size === 'medium' && 'max-w-[400px]')}>
+    <CardRevealedPointer className={cn('w-full', size === 'medium' && 'max-w-[400px]')}>
       <article
         className={cn(
           'relative flex flex-col rounded-sm border border-white/10 h-full',
-          size === 'large' && 'px-3 py-1.5',
+          size === 'large' && 'px-3 py-2',
           size === 'medium' && 'p-2.5',
           size === 'small' && 'p-2',
         )}
@@ -50,7 +51,7 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
                 )}
                 <h6
                   className={cn(
-                    'font-medium tracking-wide md:max-w-full max-w-[10ch] truncate',
+                    'font-medium tracking-wide max-w-[10ch] md:max-w-[30ch] truncate',
                     size === 'small' && 'text-sm md:max-w-[10ch]',
                   )}
                 >
@@ -61,9 +62,11 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
                 <ArrowUpRight size={16} />
               </div>
             </a>
-            <div className={cn('flex gap-2 items-center', size === 'small' && 'hidden')}>
-              <ResourceMenu resource={resource} />
-            </div>
+            {!readonly && (
+              <div className={cn('flex gap-2 items-center', size === 'small' && 'hidden')}>
+                <ResourceMenu resource={resource} />
+              </div>
+            )}
           </div>
           <div>
             <p className={cn('text-xs text-neutral-400', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
@@ -75,7 +78,13 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
-          <p className={cn('text-sm text-neutral-300', size === 'small' && 'hidden', !isHovering && 'truncate')}>
+          <p
+            className={cn(
+              'text-sm text-neutral-300 max-w-full whitespace-normal',
+              size === 'small' && 'hidden',
+              !isHovering && 'truncate',
+            )}
+          >
             {resource.description}
           </p>
         </div>

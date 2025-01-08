@@ -1,5 +1,5 @@
 'use server'
-import { TablesInsert } from '@/database.types'
+import { Tables, TablesInsert } from '@/database.types'
 import { getUser } from '../auth/service'
 import { resourceSchema } from './schema'
 import {
@@ -127,5 +127,27 @@ export async function addClickToResourceAction(resource: TablesInsert<'resources
   }
 
   revalidatePath('/')
+  return { message: 'success' }
+}
+
+export async function saveSharedResourceAction(resource: TablesInsert<'resources'>) {
+  const { data, error: userError } = await getUser()
+  if (userError) {
+    return { error: userError.message }
+  }
+
+  const { user } = data
+  const newResource: TablesInsert<'resources'> = {
+    ...resource,
+    user_id: user.id,
+  }
+
+  const { error } = await createResource(newResource)
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+
   return { message: 'success' }
 }
