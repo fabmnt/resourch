@@ -11,8 +11,8 @@ export function MainNav() {
   return (
     <nav className='flex items-center gap-2'>
       <Button
-        className='rounded-md'
-        variant='outline'
+        className='rounded-md hover:no-underline'
+        variant='link'
         asChild
       >
         <Link
@@ -23,7 +23,8 @@ export function MainNav() {
         </Link>
       </Button>
       <Button
-        variant='outline'
+        className='rounded-md hover:no-underline'
+        variant='link'
         asChild
       >
         <Link
