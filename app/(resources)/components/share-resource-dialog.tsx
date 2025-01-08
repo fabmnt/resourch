@@ -11,14 +11,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tables } from '@/database.types'
 import { createClient } from '@/utils/supabase/client'
-import { Copy } from 'lucide-react'
+import { CheckCheck, Copy } from 'lucide-react'
 import { useQueryState } from 'nuqs'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function ShareResourceDialog() {
   const [sharingId, setSharingId] = useQueryState('sharing')
   const [shareLink, setShareLink] = useState<string | undefined>()
   const [isOpen, setIsOpen] = useState(() => sharingId != null)
+  const copyButtonRef = useRef<HTMLButtonElement>(null)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     if (sharingId == null) {
@@ -74,11 +76,17 @@ export function ShareResourceDialog() {
                 type='email'
               />
               <button
+                ref={copyButtonRef}
                 onClick={() => {
-                  if (shareLink == null) {
+                  if (shareLink == null || copyButtonRef.current == null) {
                     return
                   }
-                  navigator.clipboard.writeText(shareLink)
+                  navigator.clipboard.writeText(shareLink).then(() => {
+                    setCopied(true)
+                    setTimeout(() => {
+                      setCopied(false)
+                    }, 2000)
+                  })
                 }}
                 className='absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg border border-transparent text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
                 aria-label='Subscribe'
@@ -86,6 +94,13 @@ export function ShareResourceDialog() {
                 <Copy
                   size={16}
                   strokeWidth={2}
+                  aria-hidden='true'
+                  className={`absolute transition-opacity ${copied ? 'opacity-0' : 'opacity-100'}`}
+                />
+                <CheckCheck
+                  size={16}
+                  strokeWidth={2}
+                  className={`absolute transition-opacity duration-200 ${copied ? 'opacity-100' : 'opacity-0'}`}
                   aria-hidden='true'
                 />
               </button>
