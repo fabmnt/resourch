@@ -48,33 +48,32 @@ export async function addResourceToPinned(resourceId: number) {
   const supabase = await createClient()
   const { data: userData, error: userError } = await getUser()
   if (userError) {
-    return { data: null, error: userError }
+    return { error: userError }
   }
 
-  const { data, error } = await supabase
-    .from('pinned_resources')
-    .insert({
-      user_id: userData.user.id,
-      resource_id: resourceId,
+  const { error } = await supabase
+    .from('resources')
+    .update({
+      is_pinned: true,
     })
-    .select()
+    .eq('id', resourceId)
+    .eq('user_id', userData.user.id)
 
   if (error) {
-    return { data: null, error }
+    return { error }
   }
 
-  return { data, error: null }
+  return { error: null }
 }
 
 export async function getPinnedResources(userId: string) {
   const supabase = await createClient()
-  const { data, error } = await supabase.from('pinned_resources').select('resources(*)').eq('user_id', userId)
+  const { data, error } = await supabase.from('resources').select('*').eq('user_id', userId).eq('is_pinned', true)
 
   if (error) {
     return { data: null, error }
   }
-  const resources = data.map((pinnedResource) => pinnedResource.resources)
-  return { data: resources, error: null }
+  return { data, error: null }
 }
 
 export async function unpinResource(resourceId: number) {
@@ -85,8 +84,10 @@ export async function unpinResource(resourceId: number) {
   }
 
   const { error } = await supabase
-    .from('pinned_resources')
-    .delete()
+    .from('resources')
+    .update({
+      is_pinned: false,
+    })
     .eq('user_id', userData.user.id)
     .eq('resource_id', resourceId)
 
@@ -104,7 +105,12 @@ export async function unpinAllResources() {
     return { error: userError }
   }
 
-  const { error } = await supabase.from('pinned_resources').delete().eq('user_id', userData.user.id)
+  const { error } = await supabase
+    .from('resources')
+    .update({
+      is_pinned: false,
+    })
+    .eq('user_id', userData.user.id)
 
   if (error) {
     return { error }

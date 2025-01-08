@@ -33,41 +33,13 @@ export type Database = {
         }
         Relationships: []
       }
-      pinned_resources: {
-        Row: {
-          created_at: string
-          id: number
-          resource_id: number
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          resource_id: number
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          resource_id?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "pinned_resources_resource_id_fkey"
-            columns: ["resource_id"]
-            isOneToOne: false
-            referencedRelation: "resources"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       resources: {
         Row: {
           created_at: string
           description: string | null
           icon_url: string | null
           id: number
+          is_pinned: boolean
           likes: number
           title: string
           total_clicks: number | null
@@ -79,6 +51,7 @@ export type Database = {
           description?: string | null
           icon_url?: string | null
           id?: number
+          is_pinned?: boolean
           likes?: number
           title: string
           total_clicks?: number | null
@@ -90,6 +63,7 @@ export type Database = {
           description?: string | null
           icon_url?: string | null
           id?: number
+          is_pinned?: boolean
           likes?: number
           title?: string
           total_clicks?: number | null

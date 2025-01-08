@@ -8,17 +8,19 @@ import { Tables } from '@/database.types'
 export function ResourceMenu({ resource }: { resource: Tables<'resources'> }) {
   return (
     <DropdownDots>
-      <DropdownMenuItem
-        onClick={() => addResourceToPinnedAction(resource.id)}
-        className='flex gap-2 items-center'
-      >
-        <Pin
-          size={16}
-          strokeWidth={2}
-          aria-hidden='true'
-        />
-        Pin to top
-      </DropdownMenuItem>
+      {!resource.is_pinned && (
+        <DropdownMenuItem
+          onClick={() => addResourceToPinnedAction(resource.id)}
+          className='flex gap-2 items-center'
+        >
+          <Pin
+            size={16}
+            strokeWidth={2}
+            aria-hidden='true'
+          />
+          Pin to top
+        </DropdownMenuItem>
+      )}
       <DropdownMenuItem
         onClick={() => deleteResourceAction(resource.id)}
         className='flex gap-2 items-center text-red-700'
