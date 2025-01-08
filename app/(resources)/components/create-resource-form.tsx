@@ -94,6 +94,7 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
         </div>
       </div>
       <Button
+        disabled={pending}
         type='submit'
         className='w-full'
       >

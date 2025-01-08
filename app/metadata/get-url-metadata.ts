@@ -11,21 +11,16 @@ export async function getUrlMetadata(url: string): Promise<URLMetadata> {
   const { window } = new JSDOM()
   const parser = new window.DOMParser()
   const doc = parser.parseFromString(html, 'text/html')
-  const title = doc.querySelector('title')?.textContent ?? undefined
+  const title =
+    doc.head.querySelector('meta[name="title"]')?.getAttribute('content') ??
+    doc.querySelector('title')?.textContent ??
+    undefined
   const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') ?? undefined
-  const headLinks = doc.head.getElementsByTagName('link')
-  let iconURL: string | undefined
-  for (const link of Array.from(headLinks)) {
-    const rel = link.getAttribute('rel')
-    if (rel == null) {
-      continue
-    }
-
-    if (rel.includes('icon') || rel.includes('shortcut icon')) {
-      iconURL = link.getAttribute('href') ?? undefined
-      break
-    }
-  }
+  const iconURL =
+    doc.head.querySelector('link[rel="icon"]')?.getAttribute('href') ??
+    doc.head.querySelector('link[rel="shortcut icon"]')?.getAttribute('href') ??
+    doc.head.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') ??
+    undefined
 
   return {
     title,
