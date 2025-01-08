@@ -41,7 +41,6 @@ export function SharedDialog() {
 
   useEffect(() => {
     if (!isOpen) {
-      alert('closed')
       setResource(undefined)
       setSharedParam(null)
     }
