@@ -30,7 +30,7 @@ export function PinnedActions({ resources }: PinnedActionsProps) {
         </DropdownMenuItem>
       ))}
       <DropdownMenuSeparator />
-      <DropdownMenuItem onClick={() => unpinAllResourcesAction()}>Clear all</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => unpinAllResourcesAction()}>Unpin all</DropdownMenuItem>
     </DropdownDots>
   )
 }
