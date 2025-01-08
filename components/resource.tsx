@@ -57,7 +57,7 @@ export function Resource({ resource, size = 'medium' }: ResourceProps) {
             </div>
           </div>
           <div>
-            <p className={cn('text-xs text-neutral-500', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
+            <p className={cn('text-xs text-neutral-400', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
               {new URL(resource.url).toString().replace('https://', '').replace('www.', '')}
             </p>
           </div>

@@ -2,6 +2,7 @@ import { Resource } from '@/components/resource'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { getFeaturedResources, getUserResources } from '../service'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export async function FeaturedResources({ q }: { q: string }) {
   const supabase = await createClient()
