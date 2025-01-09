@@ -51,7 +51,7 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
                 )}
                 <div
                   className={cn(
-                    'flex flex-col max-w-[20ch] md:max-w-[40ch]',
+                    'flex flex-col max-w-[10ch] md:max-w-[40ch]',
                     size === 'small' && 'text-sm md:max-w-[8ch]',
                   )}
                 >
