@@ -35,7 +35,7 @@ export async function getFeaturedResources(userId: string, query = '') {
 
 export async function createResource(resource: TablesInsert<'resources'>) {
   const supabase = await createClient()
-  return await supabase.from('resources').insert(resource)
+  return await supabase.from('resources').insert(resource).select().single()
 }
 
 export async function deleteResource(resourceId: number) {
@@ -129,4 +129,12 @@ export async function unpinAllResources() {
 export async function updateResource(resource: TablesInsert<'resources'>) {
   const supabase = await createClient()
   return await supabase.from('resources').upsert(resource).single()
+}
+
+export async function addCategoriesToResource(resourceId: number, categoriesIds: number[]) {
+  const supabase = await createClient()
+  return await supabase
+    .from('resource_category')
+    .insert(categoriesIds.map((categoryId) => ({ resource_id: resourceId, category_id: categoryId })))
+    .select()
 }

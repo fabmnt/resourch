@@ -15,11 +15,12 @@ import { useQueryState } from 'nuqs'
 import { useEffect, useState } from 'react'
 import { saveSharedResourceAction } from '../actions'
 import { useToast } from '@/hooks/use-toast'
+import { ResourceWithCategories } from '../types/resources'
 
 export function SharedDialog() {
   const [sharedParam, setSharedParam] = useQueryState('shared')
   const [isOpen, setIsOpen] = useState(() => sharedParam != null)
-  const [resource, setResource] = useState<Tables<'resources'> | undefined>()
+  const [resource, setResource] = useState<ResourceWithCategories | undefined>()
   const { toast } = useToast()
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export function SharedDialog() {
     const supabase = createClient()
     supabase
       .from('resources')
-      .select('*')
+      .select('*, categories(*)')
       .eq('id', sharedParam)
       .single()
       .then(({ data }) => {

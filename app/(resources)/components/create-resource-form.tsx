@@ -4,9 +4,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Clipboard } from 'lucide-react'
 import { createResourceAction } from '../actions'
-import { useActionState, useEffect } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
+import { SelectMultipleCategories } from './select-multiple-categories'
+import { Tables } from '@/database.types'
+import { createClient } from '@/utils/supabase/client'
 
 interface CreateResourceFormProps {
   onSuccess?: () => void
@@ -15,6 +18,36 @@ interface CreateResourceFormProps {
 
 export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormProps) {
   const [state, formAction, pending] = useActionState(createResourceAction, { message: '' })
+  const [selectedCategoriesIds, setSelectedCategoriesIds] = useState<string[]>([])
+  const [categories, setCategories] = useState<Tables<'categories'>[]>([])
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase
+      .from('categories')
+      .select('*')
+      .then(({ data }) => {
+        if (data) {
+          setCategories(data)
+        }
+      })
+  }, [])
+
+  useEffect(() => {
+    if (state.message === 'success') {
+      onSuccess?.()
+      return
+    }
+
+    if (state.error != null) {
+      onError?.(`An error occurred while creating the resource:\n${state.error}.`)
+    }
+  }, [state])
+
+  const hanldeCreateResource = (formData: FormData) => {
+    formData.append('categories', selectedCategoriesIds.join(','))
+    formAction(formData)
+  }
 
   const handlePasteContent = async () => {
     const clipboardContent = await navigator.clipboard.readText()
@@ -29,21 +62,10 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
     urlInput.value = rawUrl.replace('https://', '')
   }
 
-  useEffect(() => {
-    if (state.message === 'success') {
-      onSuccess?.()
-      return
-    }
-
-    if (state.error != null) {
-      onError?.(`An error occurred while creating the resource:\n${state.error}.`)
-    }
-  }, [state])
-
   return (
     <form
       className='space-y-5'
-      action={formAction}
+      action={hanldeCreateResource}
     >
       <div className='space-y-4'>
         <div className='space-y-2'>
@@ -74,6 +96,13 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
               />
             </button>
           </div>
+        </div>
+        <div className='space-y-2'>
+          <SelectMultipleCategories
+            categories={categories}
+            selectedCategoriesIds={selectedCategoriesIds}
+            onChange={setSelectedCategoriesIds}
+          />
         </div>
         <div className='space-y-2'>
           <Label htmlFor='resource-title'>Title (optional)</Label>

@@ -9,6 +9,7 @@ import {
   unpinAllResources,
   unpinResource,
   updateResource,
+  addCategoriesToResource,
 } from './service'
 import { revalidatePath } from 'next/cache'
 import { getUrlMetadata } from '../metadata/get-url-metadata'
@@ -18,6 +19,7 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   if (!formDataUrl?.startsWith('https://') && !formDataUrl?.startsWith('http://')) {
     formDataUrl = 'https://' + formDataUrl
   }
+
   const rawFormData = {
     url: formDataUrl,
     title: formData.get('resource-title')?.toString().trim(),
@@ -69,10 +71,20 @@ export async function createResourceAction(prevState: any, formData: FormData) {
     newResource.title = URLMetadata.title
   }
 
-  const { error } = await createResource(newResource)
+  const { error, data } = await createResource(newResource)
   if (error) {
     return { error: error.message }
   }
+
+  const categoriesIds = formData.get('categories')?.toString().split(',') ?? []
+
+  if (categoriesIds.length > 0) {
+    await addCategoriesToResource(
+      data.id,
+      categoriesIds.map((id) => parseInt(id)),
+    )
+  }
+
   revalidatePath('/')
 
   return { message: 'success' }
