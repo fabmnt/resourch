@@ -6,7 +6,7 @@ export async function getUserResources(userId: string, query = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
-    .select('*')
+    .select('*, categories(*)')
     .eq('user_id', userId)
     .ilike('title', `%${query}%`)
     .order('created_at', { ascending: false })
@@ -14,7 +14,6 @@ export async function getUserResources(userId: string, query = '') {
   if (error) {
     return { data: null, error }
   }
-
   return { data, error: null }
 }
 
@@ -22,7 +21,7 @@ export async function getFeaturedResources(userId: string, query = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
-    .select('*')
+    .select('*, categories(*)')
     .eq('user_id', userId)
     .ilike('title', `%${query}%`)
     .order('total_clicks', { ascending: false })

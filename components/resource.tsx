@@ -1,15 +1,16 @@
 'use client'
+import { addClickToResourceAction } from '@/app/(resources)/actions'
 import { ResourceMenu } from '@/app/(resources)/components/resource-menu'
-import { Tables } from '@/database.types'
+import { ResourceWithCategories } from '@/app/(resources)/types/resources'
 import { cn } from '@/lib/utils'
 import { ArrowUpRight } from 'lucide-react'
 import { useState } from 'react'
 import { CardRevealedPointer } from './card-revealed-pointer'
-import { addClickToResourceAction } from '@/app/(resources)/actions'
+import { Badge } from './ui/badge'
 
 export type ResourceSize = 'small' | 'medium' | 'large'
 interface ResourceProps {
-  resource: Tables<'resources'>
+  resource: ResourceWithCategories
   size?: ResourceSize
   readonly?: boolean
 }
@@ -24,7 +25,7 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
     <CardRevealedPointer className={cn('w-full', size === 'medium' && 'max-w-[400px]')}>
       <article
         className={cn(
-          'relative flex flex-col rounded-sm border border-white/10 h-full',
+          'relative flex flex-col rounded-sm border border-white/10 h-full gap-1',
           size === 'large' && 'px-3 py-2',
           size === 'medium' && 'p-2.5',
           size === 'small' && 'p-2',
@@ -34,7 +35,7 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
           <div className='flex justify-between items-center'>
             <a
               onClick={() => addClickToResourceAction(resource)}
-              className={cn('flex gap-2 w-fit items-center hover:underline')}
+              className='w-fit hover:underline'
               href={resource.url}
               target='_blank'
               rel='noopener noreferrer'
@@ -49,17 +50,24 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
                     className='aspect-square size-6'
                   />
                 )}
-                <h6
+                <div
                   className={cn(
-                    'font-medium tracking-wide max-w-[10ch] md:max-w-[30ch] truncate',
-                    size === 'small' && 'text-sm md:max-w-[10ch]',
+                    'flex flex-col max-w-[20ch] md:max-w-[40ch]',
+                    size === 'small' && 'text-sm md:max-w-[8ch]',
                   )}
                 >
-                  {resource.title}
-                </h6>
-              </div>
-              <div className={cn(size === 'small' && 'hidden')}>
-                <ArrowUpRight size={16} />
+                  <h6 className={cn('font-medium tracking-wide truncate')}>{resource.title}</h6>
+                  <div>
+                    <p
+                      className={cn(
+                        'text-xs text-neutral-400 truncate',
+                        size === 'small' && 'max-w-[10ch] text-sm truncate',
+                      )}
+                    >
+                      {displayableURL}
+                    </p>
+                  </div>
+                </div>
               </div>
             </a>
             {!readonly && (
@@ -68,26 +76,30 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
               </div>
             )}
           </div>
+        </header>
+        {size !== 'small' && (
           <div>
-            <p className={cn('text-xs text-neutral-400', size === 'small' && 'max-w-[10ch] text-sm truncate')}>
-              {displayableURL}
+            {resource.categories?.map((category) => (
+              <Badge
+                variant='outline'
+                className='text-neutral-300'
+                key={category.id}
+              >
+                {category.title}
+              </Badge>
+            ))}
+          </div>
+        )}
+        {size !== 'small' && (
+          <div
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            <p className={cn('text-sm text-neutral-300 max-w-full whitespace-normal', !isHovering && 'truncate')}>
+              {resource.description}
             </p>
           </div>
-        </header>
-        <div
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-        >
-          <p
-            className={cn(
-              'text-sm text-neutral-300 max-w-full whitespace-normal',
-              size === 'small' && 'hidden',
-              !isHovering && 'truncate',
-            )}
-          >
-            {resource.description}
-          </p>
-        </div>
+        )}
       </article>
     </CardRevealedPointer>
   )

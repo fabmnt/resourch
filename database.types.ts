@@ -33,6 +33,39 @@ export type Database = {
         }
         Relationships: []
       }
+      resource_category: {
+        Row: {
+          category_id: number
+          created_at: string
+          resource_id: number
+        }
+        Insert: {
+          category_id: number
+          created_at?: string
+          resource_id: number
+        }
+        Update: {
+          category_id?: number
+          created_at?: string
+          resource_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_category_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_category_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       resources: {
         Row: {
           created_at: string
