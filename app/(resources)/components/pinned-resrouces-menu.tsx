@@ -19,11 +19,10 @@ export function PinnedResourcesMenu({ resources }: PinnedResourcesMenuProps) {
           <DropdownMenuItem
             onClick={() => unpinResourceAction(resource.id)}
             key={resource.id}
-            className='flex text-xs items-center justify-between gap-2'
+            className='flex text-sm items-center justify-between gap-2'
           >
             <div className='flex flex-col'>
               <span className='truncate max-w-[20ch]'>{resource.title}</span>
-              <span className='text-neutral-400 truncate max-w-[20ch]'>{resource.url}</span>
             </div>
             <Minus
               size={16}
