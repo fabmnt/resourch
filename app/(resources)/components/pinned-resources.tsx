@@ -3,7 +3,7 @@ import { Resource } from '@/components/resource'
 import { Pin } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { getPinnedResources } from '../service'
-import { PinnedActions } from './pinned-actions'
+import { PinnedResourcesMenu } from './pinned-resrouces-menu'
 
 export async function PinnedResources() {
   const {
@@ -28,7 +28,7 @@ export async function PinnedResources() {
           />
         </span>
         <div>
-          <PinnedActions resources={pinnedResources} />
+          <PinnedResourcesMenu resources={pinnedResources} />
         </div>
       </div>
       <div className='grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2'>

@@ -6,11 +6,11 @@ import { Tables } from '@/database.types'
 import { Minus } from 'lucide-react'
 import { unpinAllResourcesAction, unpinResourceAction } from '../actions'
 
-interface PinnedActionsProps {
+interface PinnedResourcesMenuProps {
   resources: Tables<'resources'>[]
 }
 
-export function PinnedActions({ resources }: PinnedActionsProps) {
+export function PinnedResourcesMenu({ resources }: PinnedResourcesMenuProps) {
   return (
     <DropdownDots>
       <DropdownMenuLabel>Unpin resources</DropdownMenuLabel>
