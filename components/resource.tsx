@@ -77,7 +77,7 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
           </div>
         </header>
         {size !== 'small' && (
-          <div>
+          <div className='flex flex-wrap gap-1'>
             {resource.categories?.map((category) => (
               <Badge
                 variant='outline'

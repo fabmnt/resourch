@@ -54,14 +54,14 @@ export function SharedDialog() {
     if (resource == null) {
       return
     }
-
-    const newResource: TablesInsert<'resources'> = {
+    const categoriesIds = resource.categories?.map((category) => category.id) ?? []
+    const newResource = {
       ...resource,
+      categories: undefined,
       id: undefined,
       created_at: undefined,
-      is_pinned: false,
     }
-    saveSharedResourceAction(newResource)
+    saveSharedResourceAction(newResource, categoriesIds)
       .then(({ error }) => {
         if (error) {
           toast({

@@ -142,7 +142,7 @@ export async function addClickToResourceAction(resource: TablesInsert<'resources
   return { message: 'success' }
 }
 
-export async function saveSharedResourceAction(resource: TablesInsert<'resources'>) {
+export async function saveSharedResourceAction(resource: TablesInsert<'resources'>, categoriesIds: number[]) {
   const { data, error: userError } = await getUser()
   if (userError) {
     return { error: userError.message }
@@ -154,9 +154,13 @@ export async function saveSharedResourceAction(resource: TablesInsert<'resources
     user_id: user.id,
   }
 
-  const { error } = await createResource(newResource)
+  const { data: createdResource, error } = await createResource(newResource)
   if (error) {
     return { error: error.message }
+  }
+
+  if (categoriesIds.length > 0) {
+    await addCategoriesToResource(createdResource.id, categoriesIds)
   }
 
   revalidatePath('/')
