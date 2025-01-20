@@ -9,8 +9,6 @@ export async function getUserResources(userId: string, query = '') {
     .select('*, categories(*), profile(*)')
     .eq('user_id', userId)
     .ilike('title', `%${query}%`)
-    .order('likes', { ascending: false })
-    .order('total_clicks', { ascending: false })
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -25,7 +23,9 @@ export async function getFeaturedResources(query = '') {
     .from('resources')
     .select('*, categories(*), profile(*)')
     .ilike('title', `%${query}%`)
+    .order('likes', { ascending: false })
     .order('total_clicks', { ascending: false })
+    .order('created_at', { ascending: false })
 
   if (error) {
     return { data: null, error }

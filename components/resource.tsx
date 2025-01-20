@@ -3,11 +3,11 @@ import { addClickToResourceAction, likeResource, unlikeResource } from '@/app/(r
 import { ResourceMenu } from '@/app/(resources)/components/resource-menu'
 import { ResourceWithCategories } from '@/app/(resources)/types/resources'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { Heart } from 'lucide-react'
+import { startTransition, useOptimistic, useState } from 'react'
 import { CardRevealedPointer } from './card-revealed-pointer'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
-import { Heart } from 'lucide-react'
 
 export type ResourceSize = 'small' | 'medium' | 'large'
 interface ResourceProps {
@@ -17,10 +17,27 @@ interface ResourceProps {
   isLiked?: boolean
 }
 export function Resource({ resource, size = 'medium', readonly = false, isLiked = false }: ResourceProps) {
+  const [optimisticLikes, setOptimisticLikes] = useOptimistic({ total_likes: resource.likes, liked: isLiked })
   const [isHovering, setIsHovering] = useState(false)
   let displayableURL = new URL(resource.url).toString().replace('https://', '').replace('www.', '')
   if (displayableURL.endsWith('/')) {
     displayableURL = displayableURL.slice(0, -1)
+  }
+
+  const handleLikeResource = async () => {
+    startTransition(() => {
+      setOptimisticLikes((prev) => ({
+        ...prev,
+        isLiked: !prev.liked,
+        likes: prev.liked ? prev.total_likes - 1 : prev.total_likes + 1,
+      }))
+    })
+
+    if (!optimisticLikes.liked) {
+      likeResource(resource.id)
+    } else {
+      unlikeResource(resource.id)
+    }
   }
 
   return (
@@ -106,22 +123,15 @@ export function Resource({ resource, size = 'medium', readonly = false, isLiked 
           <footer className='flex justify-between'>
             <p className='text-xs self-end text-neutral-400 font-semibold'>Publicado por {resource.profile?.name}</p>
             <Button
-              onClick={async () => {
-                if (!isLiked) {
-                  const res = await likeResource(resource.id)
-                  console.log(res)
-                } else {
-                  unlikeResource(resource.id)
-                }
-              }}
+              onClick={handleLikeResource}
               variant='ghost'
             >
               <div className='flex gap-x-2 items-center'>
                 <Heart
                   size={20}
-                  fill={isLiked ? '#fff' : ''}
+                  fill={optimisticLikes.liked ? '#fff' : ''}
                 />
-                {resource.likes}
+                {optimisticLikes.total_likes}
               </div>
             </Button>
           </footer>

@@ -46,6 +46,12 @@ export async function RecentResources({ q }: { q: string }) {
   }
 
   const { data: userResources } = await getUserResources(user.id, q)
+  const { data: likedResources } = await supabase
+    .from('liked_resources')
+    .select('*, profile(*)')
+    .eq('profile.user_id', user.id)
+
+  const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
 
   return (
     <div className='flex flex-col gap-4'>
@@ -54,6 +60,7 @@ export async function RecentResources({ q }: { q: string }) {
           key={resource.id}
           resource={resource}
           size='large'
+          isLiked={likedResourceIds?.includes(resource.id)}
         />
       ))}
     </div>
