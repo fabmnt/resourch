@@ -31,7 +31,7 @@ export function SharedDialog() {
     const supabase = createClient()
     supabase
       .from('resources')
-      .select('*, categories(*)')
+      .select('*, categories(*), profile(*)')
       .eq('id', sharedParam)
       .single()
       .then(({ data }) => {

@@ -39,12 +39,12 @@ export async function createResource(resource: TablesInsert<'resources'>) {
   return await supabase.from('resources').insert(resource).select().single()
 }
 
-export async function deleteResource(resourceId: number) {
+export async function deleteResource(resourceId: string) {
   const supabase = await createClient()
   return await supabase.from('resources').delete().eq('id', resourceId)
 }
 
-export async function pinResource(resourceId: number) {
+export async function pinResource(resourceId: string) {
   const supabase = await createClient()
   const { data: userData, error: userError } = await getUser()
   if (userError) {

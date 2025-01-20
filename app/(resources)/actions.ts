@@ -93,7 +93,7 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   return { message: 'success' }
 }
 
-export async function deleteResourceAction(resourceId: number) {
+export async function deleteResourceAction(resourceId: string) {
   const { error } = await deleteResource(resourceId)
   if (error) {
     return { error: error.message }
@@ -102,7 +102,7 @@ export async function deleteResourceAction(resourceId: number) {
   return { message: 'success' }
 }
 
-export async function addResourceToPinnedAction(resourceId: number) {
+export async function addResourceToPinnedAction(resourceId: string) {
   const { error } = await pinResource(resourceId)
   if (error) {
     return { error: error.message }
