@@ -100,6 +100,7 @@ export type Database = {
           title: string
           total_clicks: number
           url: string
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -113,6 +114,7 @@ export type Database = {
           title: string
           total_clicks?: number
           url: string
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -126,6 +128,7 @@ export type Database = {
           title?: string
           total_clicks?: number
           url?: string
+          user_id?: string
         }
         Relationships: [
           {

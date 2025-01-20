@@ -13,6 +13,7 @@ import {
 } from './service'
 import { revalidatePath } from 'next/cache'
 import { getUrlMetadata } from '../metadata/get-url-metadata'
+import { createClient } from '@/utils/supabase/server'
 
 export async function createResourceAction(prevState: any, formData: FormData) {
   let formDataUrl = formData.get('resource-url')?.toString().trim()
@@ -38,10 +39,17 @@ export async function createResourceAction(prevState: any, formData: FormData) {
     return { error: userError.message }
   }
 
-  const newResource: TablesInsert<'resources'> = {
-    ...validatedResource.data,
-    user_id: user.user.id,
+  const supabase = await createClient()
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select()
+    .eq('user_id', user.user.id)
+    .single()
+  if (profileError) {
+    return { error: profileError.message }
   }
+
   const {
     data: { url },
   } = validatedResource
@@ -53,14 +61,11 @@ export async function createResourceAction(prevState: any, formData: FormData) {
     return { error: 'Error getting URL metadata' }
   }
 
-  if (URLMetadata.iconURL != null) {
-    if (!URLMetadata.iconURL.startsWith('https://')) {
-      const origin = new URL(url).origin
-      const iconURL = URLMetadata.iconURL?.startsWith('/') ? URLMetadata.iconURL : '/' + URLMetadata.iconURL
-      newResource['icon_url'] = new URL(origin + iconURL).toString()
-    } else {
-      newResource['icon_url'] = URLMetadata.iconURL
-    }
+  const newResource: TablesInsert<'resources'> = {
+    ...validatedResource.data,
+    user_id: user.user.id,
+    profile_id: profile.id,
+    icon_url: URLMetadata.iconURL ?? '',
   }
 
   if (!newResource.description && URLMetadata.description) {
@@ -79,10 +84,7 @@ export async function createResourceAction(prevState: any, formData: FormData) {
   const categoriesIds = formData.get('categories')?.toString().split(',') ?? []
 
   if (categoriesIds.length > 0) {
-    await addCategoriesToResource(
-      data.id,
-      categoriesIds.map((id) => parseInt(id)),
-    )
+    await addCategoriesToResource(data.id, categoriesIds)
   }
 
   revalidatePath('/')
@@ -142,7 +144,7 @@ export async function addClickToResourceAction(resource: TablesInsert<'resources
   return { message: 'success' }
 }
 
-export async function saveSharedResourceAction(resource: TablesInsert<'resources'>, categoriesIds: number[]) {
+export async function saveSharedResourceAction(resource: TablesInsert<'resources'>, categoriesIds: string[]) {
   const { data, error: userError } = await getUser()
   if (userError) {
     return { error: userError.message }

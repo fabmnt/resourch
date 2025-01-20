@@ -131,10 +131,10 @@ export async function updateResource(resource: TablesInsert<'resources'>) {
   return await supabase.from('resources').upsert(resource).single()
 }
 
-export async function addCategoriesToResource(resourceId: number, categoriesIds: number[]) {
+export async function addCategoriesToResource(resourceId: string, categoriesIds: string[]) {
   const supabase = await createClient()
   return await supabase
-    .from('resource_category')
+    .from('resource_categories')
     .insert(categoriesIds.map((categoryId) => ({ resource_id: resourceId, category_id: categoryId })))
     .select()
 }
