@@ -82,7 +82,7 @@ export async function getPinnedResources(userId: string) {
   return { data, error: null }
 }
 
-export async function unpinResource(resourceId: number) {
+export async function unpinResource(resourceId: string) {
   const supabase = await createClient()
   const { data: userData, error: userError } = await getUser()
   if (userError) {

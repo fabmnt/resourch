@@ -112,7 +112,7 @@ export async function addResourceToPinnedAction(resourceId: number) {
   return { message: 'success' }
 }
 
-export async function unpinResourceAction(resourceId: number) {
+export async function unpinResourceAction(resourceId: string) {
   const { error } = await unpinResource(resourceId)
 
   if (error) {
