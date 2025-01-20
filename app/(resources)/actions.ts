@@ -14,6 +14,7 @@ import {
 import { revalidatePath } from 'next/cache'
 import { getUrlMetadata } from '../metadata/get-url-metadata'
 import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
 
 export async function createResourceAction(prevState: any, formData: FormData) {
   let formDataUrl = formData.get('resource-url')?.toString().trim()
@@ -133,9 +134,23 @@ export async function unpinAllResourcesAction() {
   return { message: 'success' }
 }
 
-export async function addClickToResourceAction(resource: TablesInsert<'resources'>) {
-  resource.total_clicks = (resource.total_clicks ?? 0) + 1
-  const { error } = await updateResource(resource)
+export async function addClickToResourceAction(resourceId: string) {
+  const supabase = await createClient()
+  const { data: resource, error: resourceError } = await supabase
+    .from('resources')
+    .select('total_clicks')
+    .eq('id', resourceId)
+    .single()
+
+  if (resourceError) {
+    return { error: resourceError.message }
+  }
+
+  const { error } = await supabase
+    .from('resources')
+    .update({ total_clicks: resource.total_clicks + 1 })
+    .eq('id', resourceId)
+
   if (error) {
     return { error: error.message }
   }
@@ -168,4 +183,82 @@ export async function saveSharedResourceAction(resource: TablesInsert<'resources
   revalidatePath('/')
 
   return { message: 'success' }
+}
+
+export async function likeResource(resourceId: string) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user == null) {
+    redirect('/sign-in')
+  }
+
+  const { data: profile, error: profileError } = await supabase.from('profile').select().eq('user_id', user.id).single()
+  if (profileError) {
+    return { error: profileError.message }
+  }
+
+  const { error: likedResourceError, data } = await supabase
+    .from('liked_resources')
+    .upsert({ resource_id: resourceId, profile_id: profile.id })
+    .select('*, resources(*)')
+    .single()
+
+  if (likedResourceError) {
+    return { error: likedResourceError.message }
+  }
+  console.log(data)
+
+  const { error } = await supabase
+    .from('resources')
+    .update({ likes: data.resources.likes + 1 })
+    .eq('id', resourceId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+}
+
+export async function unlikeResource(resourceId: string) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user == null) {
+    redirect('/sign-in')
+  }
+
+  const { data: profile, error: profileError } = await supabase.from('profile').select().eq('user_id', user.id).single()
+
+  if (profileError) {
+    return { error: profileError.message }
+  }
+
+  const { error: likedResourceError, data } = await supabase
+    .from('liked_resources')
+    .delete()
+    .eq('resource_id', resourceId)
+    .eq('profile_id', profile.id)
+    .select('*, resources(*)')
+    .single()
+
+  if (likedResourceError) {
+    return { error: likedResourceError.message }
+  }
+
+  const { error } = await supabase
+    .from('resources')
+    .update({ likes: data.resources.likes - 1 })
+    .eq('id', resourceId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
 }

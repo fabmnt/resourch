@@ -11,27 +11,27 @@ export function MainNav() {
   return (
     <nav className='flex items-center gap-2'>
       <Button
-        className='rounded-md hover:no-underline'
+        className='rounded-none hover:no-underline border-b-2 border-transparent'
         variant='link'
         asChild
       >
         <Link
           href='/'
-          className={cn(pathname === '/' && 'bg-muted shadow-none')}
+          className={cn(pathname === '/' && '!border-primary')}
         >
           Featured
         </Link>
       </Button>
       <Button
-        className='rounded-md hover:no-underline'
+        className='rounded-none hover:no-underline border-b-2 border-transparent'
         variant='link'
         asChild
       >
         <Link
           href='/recent'
-          className={cn(pathname === '/recent' && 'bg-muted shadow-none')}
+          className={cn(pathname === '/recent' && '!border-primary')}
         >
-          Recent
+          My resources
         </Link>
       </Button>
     </nav>

@@ -6,9 +6,11 @@ export async function getUserResources(userId: string, query = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
-    .select('*, categories(*)')
+    .select('*, categories(*), profile(*)')
     .eq('user_id', userId)
     .ilike('title', `%${query}%`)
+    .order('likes', { ascending: false })
+    .order('total_clicks', { ascending: false })
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -17,12 +19,11 @@ export async function getUserResources(userId: string, query = '') {
   return { data, error: null }
 }
 
-export async function getFeaturedResources(userId: string, query = '') {
+export async function getFeaturedResources(query = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
-    .select('*, categories(*)')
-    .eq('user_id', userId)
+    .select('*, categories(*), profile(*)')
     .ilike('title', `%${query}%`)
     .order('total_clicks', { ascending: false })
 

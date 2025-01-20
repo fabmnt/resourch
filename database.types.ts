@@ -30,6 +30,39 @@ export type Database = {
         }
         Relationships: []
       }
+      liked_resources: {
+        Row: {
+          created_at: string
+          profile_id: string
+          resource_id: string
+        }
+        Insert: {
+          created_at?: string
+          profile_id: string
+          resource_id: string
+        }
+        Update: {
+          created_at?: string
+          profile_id?: string
+          resource_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liked_resources_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liked_resources_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile: {
         Row: {
           created_at: string

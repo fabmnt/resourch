@@ -1,19 +1,22 @@
 'use client'
-import { addClickToResourceAction } from '@/app/(resources)/actions'
+import { addClickToResourceAction, likeResource, unlikeResource } from '@/app/(resources)/actions'
 import { ResourceMenu } from '@/app/(resources)/components/resource-menu'
 import { ResourceWithCategories } from '@/app/(resources)/types/resources'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { CardRevealedPointer } from './card-revealed-pointer'
 import { Badge } from './ui/badge'
+import { Button } from './ui/button'
+import { Heart } from 'lucide-react'
 
 export type ResourceSize = 'small' | 'medium' | 'large'
 interface ResourceProps {
   resource: ResourceWithCategories
   size?: ResourceSize
   readonly?: boolean
+  isLiked?: boolean
 }
-export function Resource({ resource, size = 'medium', readonly = false }: ResourceProps) {
+export function Resource({ resource, size = 'medium', readonly = false, isLiked = false }: ResourceProps) {
   const [isHovering, setIsHovering] = useState(false)
   let displayableURL = new URL(resource.url).toString().replace('https://', '').replace('www.', '')
   if (displayableURL.endsWith('/')) {
@@ -33,7 +36,7 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
         <header className='flex flex-col'>
           <div className='flex justify-between items-center'>
             <a
-              onClick={() => addClickToResourceAction(resource)}
+              onClick={() => addClickToResourceAction(resource.id)}
               className='w-fit hover:underline'
               href={resource.url}
               target='_blank'
@@ -98,6 +101,30 @@ export function Resource({ resource, size = 'medium', readonly = false }: Resour
               {resource.description}
             </p>
           </div>
+        )}
+        {size !== 'small' && (
+          <footer className='flex justify-between'>
+            <p className='text-xs self-end text-neutral-400 font-semibold'>Publicado por {resource.profile?.name}</p>
+            <Button
+              onClick={async () => {
+                if (!isLiked) {
+                  const res = await likeResource(resource.id)
+                  console.log(res)
+                } else {
+                  unlikeResource(resource.id)
+                }
+              }}
+              variant='ghost'
+            >
+              <div className='flex gap-x-2 items-center'>
+                <Heart
+                  size={20}
+                  fill={isLiked ? '#fff' : ''}
+                />
+                {resource.likes}
+              </div>
+            </Button>
+          </footer>
         )}
       </article>
     </CardRevealedPointer>
