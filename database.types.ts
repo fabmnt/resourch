@@ -11,54 +11,75 @@ export type Database = {
     Tables: {
       categories: {
         Row: {
-          color: string | null
           created_at: string
           description: string | null
-          id: number
+          id: string
           title: string
         }
         Insert: {
-          color?: string | null
           created_at?: string
           description?: string | null
-          id?: number
+          id?: string
           title: string
         }
         Update: {
-          color?: string | null
           created_at?: string
           description?: string | null
-          id?: number
+          id?: string
           title?: string
         }
         Relationships: []
       }
-      resource_category: {
+      profile: {
         Row: {
-          category_id: number
           created_at: string
-          resource_id: number
+          email: string
+          id: string
+          name: string
+          user_id: string
         }
         Insert: {
-          category_id: number
           created_at?: string
-          resource_id: number
+          email: string
+          id?: string
+          name: string
+          user_id: string
         }
         Update: {
-          category_id?: number
           created_at?: string
-          resource_id?: number
+          email?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resource_categories: {
+        Row: {
+          category_id: string
+          created_at: string
+          resource_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          resource_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          resource_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "resource_category_category_id_fkey"
+            foreignKeyName: "resource_categories_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "resource_category_resource_id_fkey"
+            foreignKeyName: "resource_categories_resource_id_fkey"
             columns: ["resource_id"]
             isOneToOne: false
             referencedRelation: "resources"
@@ -70,43 +91,51 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
-          icon_url: string | null
-          id: number
+          icon_url: string
+          id: string
           is_pinned: boolean
           likes: number
           pinned_at: string | null
+          profile_id: string
           title: string
-          total_clicks: number | null
+          total_clicks: number
           url: string
-          user_id: string
         }
         Insert: {
           created_at?: string
           description?: string | null
-          icon_url?: string | null
-          id?: number
+          icon_url: string
+          id?: string
           is_pinned?: boolean
           likes?: number
           pinned_at?: string | null
+          profile_id: string
           title: string
-          total_clicks?: number | null
+          total_clicks?: number
           url: string
-          user_id: string
         }
         Update: {
           created_at?: string
           description?: string | null
-          icon_url?: string | null
-          id?: number
+          icon_url?: string
+          id?: string
           is_pinned?: boolean
           likes?: number
           pinned_at?: string | null
+          profile_id?: string
           title?: string
-          total_clicks?: number | null
+          total_clicks?: number
           url?: string
-          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "resources_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

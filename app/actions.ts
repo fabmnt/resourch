@@ -8,14 +8,15 @@ import { redirect } from 'next/navigation'
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get('email')?.toString()
   const password = formData.get('password')?.toString()
+  const name = formData.get('name')?.toString()
   const supabase = await createClient()
   const origin = (await headers()).get('origin')
 
-  if (!email || !password) {
+  if (!email || !password || !name) {
     return encodedRedirect('error', '/sign-up', 'Email and password are required')
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { error, data: userData } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -26,13 +27,15 @@ export const signUpAction = async (formData: FormData) => {
   if (error) {
     console.error(error.code + ' ' + error.message)
     return encodedRedirect('error', '/sign-up', error.message)
-  } else {
-    return encodedRedirect(
-      'success',
-      '/sign-up',
-      'Thanks for signing up! Please check your email for a verification link.',
-    )
   }
+
+  const { error: profileError } = await supabase.from('profile').insert({ email, name, user_id: userData.user?.id! })
+
+  if (profileError) {
+    return encodedRedirect('error', '/sign-in', 'Profile creation failed')
+  }
+
+  redirect('/')
 }
 
 export const signInAction = async (formData: FormData) => {
@@ -40,7 +43,7 @@ export const signInAction = async (formData: FormData) => {
   const password = formData.get('password') as string
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error, data: userData } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
