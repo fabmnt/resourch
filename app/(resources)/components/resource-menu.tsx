@@ -2,11 +2,17 @@
 import { DropdownDots } from '@/components/ui/dropdown-dots'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { addResourceToPinnedAction, deleteResourceAction } from '../actions'
-import { Pin, Share, Trash } from 'lucide-react'
+import { Pin, Save, Share, Trash } from 'lucide-react'
 import { Tables } from '@/database.types'
 import { useRouter } from 'next/navigation'
 
-export function ResourceMenu({ resource }: { resource: Tables<'resources'> }) {
+export function ResourceMenu({
+  resource,
+  ownedByCurrentUser = false,
+}: {
+  resource: Tables<'resources'>
+  ownedByCurrentUser?: boolean
+}) {
   const router = useRouter()
 
   return (
@@ -24,19 +30,31 @@ export function ResourceMenu({ resource }: { resource: Tables<'resources'> }) {
           Pin to top
         </DropdownMenuItem>
       )}
-      <DropdownMenuItem
-        className='flex items-center gap-2'
-        onClick={() => {
-          router.replace('?sharing=' + resource.id)
-        }}
-      >
-        <Share
-          size={16}
-          strokeWidth={2}
-          aria-hidden='true'
-        />
-        Share
-      </DropdownMenuItem>
+      {ownedByCurrentUser && (
+        <DropdownMenuItem
+          className='flex items-center gap-2'
+          onClick={() => {
+            router.replace('?sharing=' + resource.id)
+          }}
+        >
+          <Share
+            size={16}
+            strokeWidth={2}
+            aria-hidden='true'
+          />
+          Share
+        </DropdownMenuItem>
+      )}
+      {!ownedByCurrentUser && (
+        <DropdownMenuItem className='flex gap-2 items-center'>
+          <Save
+            size={16}
+            strokeWidth={2}
+            aria-hidden='true'
+          />
+          Save
+        </DropdownMenuItem>
+      )}
       <DropdownMenuItem
         onClick={() => deleteResourceAction(resource.id)}
         className='flex gap-2 items-center text-red-700'

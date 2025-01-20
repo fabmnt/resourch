@@ -15,8 +15,15 @@ interface ResourceProps {
   size?: ResourceSize
   readonly?: boolean
   isLiked?: boolean
+  ownedByCurrentUser?: boolean
 }
-export function Resource({ resource, size = 'medium', readonly = false, isLiked = false }: ResourceProps) {
+export function Resource({
+  resource,
+  size = 'medium',
+  readonly = false,
+  isLiked = false,
+  ownedByCurrentUser = false,
+}: ResourceProps) {
   const [optimisticLikes, setOptimisticLikes] = useOptimistic({ total_likes: resource.likes, liked: isLiked })
   const [isHovering, setIsHovering] = useState(false)
   let displayableURL = new URL(resource.url).toString().replace('https://', '').replace('www.', '')
