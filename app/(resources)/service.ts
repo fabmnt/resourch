@@ -71,7 +71,7 @@ export async function getPinnedResources(userId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
-    .select('*')
+    .select('*, profile(*)')
     .eq('user_id', userId)
     .eq('is_pinned', true)
     .order('pinned_at', { ascending: true })
