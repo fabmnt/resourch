@@ -262,3 +262,57 @@ export async function unlikeResource(resourceId: string) {
 
   revalidatePath('/')
 }
+
+export async function saveResourceAction(resourceId: string) {
+  const supabase = await createClient()
+  const { data: user, error: userError } = await getUser()
+  if (userError) {
+    return { error: userError.message }
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select()
+    .eq('user_id', user.user.id)
+    .single()
+  if (profileError) {
+    return { error: profileError.message }
+  }
+
+  const { error } = await supabase.from('saved_resources').insert({ resource_id: resourceId, profile_id: profile.id })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+}
+
+export async function removeSavedResourceAction(resourceId: string) {
+  const supabase = await createClient()
+  const { data: user, error: userError } = await getUser()
+  if (userError) {
+    return { error: userError.message }
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select()
+    .eq('user_id', user.user.id)
+    .single()
+  if (profileError) {
+    return { error: profileError.message }
+  }
+
+  const { error } = await supabase
+    .from('saved_resources')
+    .delete()
+    .eq('resource_id', resourceId)
+    .eq('profile_id', profile.id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+}

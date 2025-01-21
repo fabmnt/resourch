@@ -16,6 +16,7 @@ interface ResourceProps {
   readonly?: boolean
   isLiked?: boolean
   ownedByCurrentUser?: boolean
+  isSaved?: boolean
 }
 export function Resource({
   resource,
@@ -23,6 +24,7 @@ export function Resource({
   readonly = false,
   isLiked = false,
   ownedByCurrentUser = false,
+  isSaved = false,
 }: ResourceProps) {
   const [optimisticLikes, setOptimisticLikes] = useOptimistic({ total_likes: resource.likes, liked: isLiked })
   const [isHovering, setIsHovering] = useState(false)
@@ -101,6 +103,7 @@ export function Resource({
                 <ResourceMenu
                   ownedByCurrentUser={ownedByCurrentUser}
                   resource={resource}
+                  isSaved={isSaved}
                 />
               </div>
             )}

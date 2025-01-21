@@ -21,6 +21,13 @@ export async function FeaturedResources({ q }: { q: string }) {
 
   const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
 
+  const { data: savedResources } = await supabase
+    .from('saved_resources')
+    .select('*, profile(*)')
+    .eq('profile.user_id', user.id)
+
+  const savedResourceIds = savedResources?.map((resource) => resource.resource_id)
+
   return (
     <div className='flex flex-col gap-4'>
       {featuredResources?.map((resource) => (
@@ -28,7 +35,9 @@ export async function FeaturedResources({ q }: { q: string }) {
           key={resource.id}
           resource={resource}
           size='large'
+          ownedByCurrentUser={resource.profile.user_id === user.id}
           isLiked={likedResourceIds?.includes(resource.id)}
+          isSaved={savedResourceIds?.includes(resource.id)}
         />
       ))}
     </div>
@@ -38,14 +47,13 @@ export async function FeaturedResources({ q }: { q: string }) {
 export async function RecentResources({ q }: { q: string }) {
   const supabase = await createClient()
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  const user = session?.user
+    data: { user },
+  } = await supabase.auth.getUser()
   if (user == null) {
     return redirect('/sign-in')
   }
 
-  const { data: userResources } = await getUserResources(user.id, q)
+  const { data: userResources, error } = await getUserResources(user.id, q)
   const { data: likedResources } = await supabase
     .from('liked_resources')
     .select('*, profile(*)')
@@ -62,6 +70,55 @@ export async function RecentResources({ q }: { q: string }) {
           size='large'
           ownedByCurrentUser
           isLiked={likedResourceIds?.includes(resource.id)}
+        />
+      ))}
+    </div>
+  )
+}
+
+export async function SavedResources({ q }: { q: string }) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (user == null) {
+    redirect('/sign-in')
+  }
+
+  const { data: profile } = await supabase.from('profile').select('*').eq('user_id', user.id).single()
+  if (profile == null) {
+    redirect('/sign-in')
+  }
+
+  const { data } = await supabase
+    .from('saved_resources')
+    .select('resources(*, profile(*), categories(*))')
+    .eq('profile_id', profile.id)
+  const resources = data?.map((savedResource) => savedResource.resources)
+
+  const { data: likedResources } = await supabase
+    .from('liked_resources')
+    .select('*, profile(*)')
+    .eq('profile.user_id', user.id)
+
+  const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
+
+  const { data: savedResources } = await supabase
+    .from('saved_resources')
+    .select('*, profile(*)')
+    .eq('profile.user_id', user.id)
+
+  const savedResourceIds = savedResources?.map((resource) => resource.resource_id)
+
+  return (
+    <div className='flex flex-col gap-4'>
+      {resources?.map((resource) => (
+        <Resource
+          key={resource.id}
+          resource={resource}
+          size='large'
+          isLiked={likedResourceIds?.includes(resource.id)}
+          isSaved={savedResourceIds?.includes(resource.id)}
         />
       ))}
     </div>

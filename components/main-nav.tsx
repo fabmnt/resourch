@@ -34,6 +34,18 @@ export function MainNav() {
           My resources
         </Link>
       </Button>
+      <Button
+        className='rounded-none hover:no-underline border-b-2 border-transparent'
+        variant='link'
+        asChild
+      >
+        <Link
+          href='/saved'
+          className={cn(pathname === '/saved' && '!border-primary')}
+        >
+          Saved
+        </Link>
+      </Button>
     </nav>
   )
 }

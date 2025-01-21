@@ -173,6 +173,39 @@ export type Database = {
           },
         ]
       }
+      saved_resources: {
+        Row: {
+          created_at: string
+          profile_id: string
+          resource_id: string
+        }
+        Insert: {
+          created_at?: string
+          profile_id: string
+          resource_id: string
+        }
+        Update: {
+          created_at?: string
+          profile_id?: string
+          resource_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_resources_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_resources_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,17 +1,24 @@
 'use client'
 import { DropdownDots } from '@/components/ui/dropdown-dots'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { addResourceToPinnedAction, deleteResourceAction } from '../actions'
-import { Bookmark, Download, Pin, Save, Share, Trash } from 'lucide-react'
+import {
+  addResourceToPinnedAction,
+  deleteResourceAction,
+  removeSavedResourceAction,
+  saveResourceAction,
+} from '../actions'
+import { Bookmark, BookmarkMinus, BookmarkX, Download, Pin, Save, Share, Trash } from 'lucide-react'
 import { Tables } from '@/database.types'
 import { useRouter } from 'next/navigation'
 
 export function ResourceMenu({
   resource,
   ownedByCurrentUser = false,
+  isSaved = false,
 }: {
   resource: Tables<'resources'>
   ownedByCurrentUser?: boolean
+  isSaved?: boolean
 }) {
   const router = useRouter()
 
@@ -45,14 +52,34 @@ export function ResourceMenu({
           Share
         </DropdownMenuItem>
       )}
-      {!ownedByCurrentUser && (
-        <DropdownMenuItem className='flex gap-2 items-center'>
+      {!ownedByCurrentUser && !isSaved && (
+        <DropdownMenuItem
+          onClick={() => {
+            saveResourceAction(resource.id)
+          }}
+          className='flex gap-2 items-center'
+        >
           <Bookmark
             size={16}
             strokeWidth={2}
             aria-hidden='true'
           />
           Save
+        </DropdownMenuItem>
+      )}
+      {!ownedByCurrentUser && isSaved && (
+        <DropdownMenuItem
+          onClick={() => {
+            removeSavedResourceAction(resource.id)
+          }}
+          className='flex gap-2 items-center'
+        >
+          <BookmarkX
+            size={16}
+            strokeWidth={2}
+            aria-hidden='true'
+          />
+          Remove
         </DropdownMenuItem>
       )}
       {ownedByCurrentUser && (
