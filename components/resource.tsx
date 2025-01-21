@@ -98,7 +98,10 @@ export function Resource({
             </a>
             {!readonly && (
               <div className={cn('flex gap-2 items-center', size === 'small' && 'hidden')}>
-                <ResourceMenu resource={resource} />
+                <ResourceMenu
+                  ownedByCurrentUser={ownedByCurrentUser}
+                  resource={resource}
+                />
               </div>
             )}
           </div>

@@ -2,7 +2,7 @@
 import { DropdownDots } from '@/components/ui/dropdown-dots'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { addResourceToPinnedAction, deleteResourceAction } from '../actions'
-import { Pin, Save, Share, Trash } from 'lucide-react'
+import { Bookmark, Download, Pin, Save, Share, Trash } from 'lucide-react'
 import { Tables } from '@/database.types'
 import { useRouter } from 'next/navigation'
 
@@ -17,7 +17,7 @@ export function ResourceMenu({
 
   return (
     <DropdownDots>
-      {!resource.is_pinned && (
+      {!resource.is_pinned && ownedByCurrentUser && (
         <DropdownMenuItem
           onClick={() => addResourceToPinnedAction(resource.id)}
           className='flex gap-2 items-center'
@@ -47,7 +47,7 @@ export function ResourceMenu({
       )}
       {!ownedByCurrentUser && (
         <DropdownMenuItem className='flex gap-2 items-center'>
-          <Save
+          <Bookmark
             size={16}
             strokeWidth={2}
             aria-hidden='true'
@@ -55,17 +55,19 @@ export function ResourceMenu({
           Save
         </DropdownMenuItem>
       )}
-      <DropdownMenuItem
-        onClick={() => deleteResourceAction(resource.id)}
-        className='flex gap-2 items-center text-red-700'
-      >
-        <Trash
-          size={16}
-          strokeWidth={2}
-          aria-hidden='true'
-        />
-        Delete
-      </DropdownMenuItem>
+      {ownedByCurrentUser && (
+        <DropdownMenuItem
+          onClick={() => deleteResourceAction(resource.id)}
+          className='flex gap-2 items-center text-red-700'
+        >
+          <Trash
+            size={16}
+            strokeWidth={2}
+            aria-hidden='true'
+          />
+          Delete
+        </DropdownMenuItem>
+      )}
     </DropdownDots>
   )
 }

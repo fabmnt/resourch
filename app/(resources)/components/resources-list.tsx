@@ -60,6 +60,7 @@ export async function RecentResources({ q }: { q: string }) {
           key={resource.id}
           resource={resource}
           size='large'
+          ownedByCurrentUser
           isLiked={likedResourceIds?.includes(resource.id)}
         />
       ))}
