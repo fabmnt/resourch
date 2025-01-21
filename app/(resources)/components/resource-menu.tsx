@@ -10,6 +10,7 @@ import {
 import { Bookmark, BookmarkMinus, BookmarkX, Download, Pin, Save, Share, Trash } from 'lucide-react'
 import { Tables } from '@/database.types'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/hooks/use-toast'
 
 export function ResourceMenu({
   resource,
@@ -21,6 +22,7 @@ export function ResourceMenu({
   isSaved?: boolean
 }) {
   const router = useRouter()
+  const { toast } = useToast()
 
   return (
     <DropdownDots>
@@ -54,8 +56,11 @@ export function ResourceMenu({
       )}
       {!ownedByCurrentUser && !isSaved && (
         <DropdownMenuItem
-          onClick={() => {
-            saveResourceAction(resource.id)
+          onClick={async () => {
+            await saveResourceAction(resource.id)
+            toast({
+              title: 'Resource saved successfully',
+            })
           }}
           className='flex gap-2 items-center'
         >
@@ -69,8 +74,11 @@ export function ResourceMenu({
       )}
       {!ownedByCurrentUser && isSaved && (
         <DropdownMenuItem
-          onClick={() => {
-            removeSavedResourceAction(resource.id)
+          onClick={async () => {
+            await removeSavedResourceAction(resource.id)
+            toast({
+              title: 'Resource removed successfully',
+            })
           }}
           className='flex gap-2 items-center'
         >
