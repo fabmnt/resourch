@@ -21,8 +21,6 @@ export async function createResourceAction(prevState: any, formData: FormData) {
     public: formData.get('resource-public') === 'on',
   }
 
-  console.log(rawFormData)
-
   const validatedResource = resourceSchema.safeParse(rawFormData)
   if (!validatedResource.success) {
     return {
