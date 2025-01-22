@@ -31,7 +31,7 @@ export function SharedDialog() {
     const supabase = createClient()
     supabase
       .from('resources')
-      .select('*, categories(*), profile(*)')
+      .select('*, categories(*), profile!resources_profile_id_fkey(*)')
       .eq('id', sharedParam)
       .single()
       .then(({ data }) => {
@@ -54,14 +54,7 @@ export function SharedDialog() {
     if (resource == null) {
       return
     }
-    const categoriesIds = resource.categories?.map((category) => category.id) ?? []
-    const newResource = {
-      ...resource,
-      categories: undefined,
-      id: undefined,
-      created_at: undefined,
-    }
-    saveSharedResourceAction(newResource, categoriesIds)
+    saveSharedResourceAction(resource.id)
       .then(({ error }) => {
         if (error) {
           toast({

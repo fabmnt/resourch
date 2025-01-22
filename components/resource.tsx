@@ -137,18 +137,20 @@ export function Resource({
         {size !== 'small' && (
           <footer className='flex justify-between'>
             <p className='text-xs self-end text-neutral-400 font-semibold'>Publicado por {resource.profile?.name}</p>
-            <Button
-              onClick={handleLikeResource}
-              variant='ghost'
-            >
-              <div className='flex gap-x-2 items-center'>
-                <Heart
-                  size={20}
-                  fill={optimisticLikes.liked ? '#fff' : ''}
-                />
-                {optimisticLikes.total_likes}
-              </div>
-            </Button>
+            {!readonly && (
+              <Button
+                onClick={handleLikeResource}
+                variant='ghost'
+              >
+                <div className='flex gap-x-2 items-center'>
+                  <Heart
+                    size={20}
+                    fill={optimisticLikes.liked ? '#fff' : ''}
+                  />
+                  {optimisticLikes.total_likes}
+                </div>
+              </Button>
+            )}
           </footer>
         )}
       </article>

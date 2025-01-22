@@ -167,25 +167,26 @@ export async function addClickToResourceAction(resourceId: string) {
   return { message: 'success' }
 }
 
-export async function saveSharedResourceAction(resource: TablesInsert<'resources'>, categoriesIds: string[]) {
-  const { data, error: userError } = await getUser()
+export async function saveSharedResourceAction(resourceId: string) {
+  const supabase = await createClient()
+  const { data: user, error: userError } = await supabase.auth.getUser()
   if (userError) {
     return { error: userError.message }
   }
 
-  const { user } = data
-  const newResource: TablesInsert<'resources'> = {
-    ...resource,
-    user_id: user.id,
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select()
+    .eq('user_id', user.user.id)
+    .single()
+  if (profileError) {
+    return { error: profileError.message }
   }
 
-  const { data: createdResource, error } = await createResource(newResource)
+  const { error } = await supabase.from('saved_resources').insert({ resource_id: resourceId, profile_id: profile.id })
+
   if (error) {
     return { error: error.message }
-  }
-
-  if (categoriesIds.length > 0) {
-    await addCategoriesToResource(createdResource.id, categoriesIds)
   }
 
   revalidatePath('/')
