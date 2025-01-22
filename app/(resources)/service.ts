@@ -17,6 +17,7 @@ export async function getFeaturedResources(query = '') {
   const { data, error } = await supabase
     .from('resources')
     .select('*, profile!resources_profile_id_fkey(*)')
+    .eq('public', true)
     .ilike('title', `%${query}%`)
     .order('likes', { ascending: false })
     .order('total_clicks', { ascending: false })

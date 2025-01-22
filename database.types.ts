@@ -164,6 +164,7 @@ export type Database = {
           id: string
           likes: number
           profile_id: string
+          public: boolean
           title: string
           total_clicks: number
           url: string
@@ -176,6 +177,7 @@ export type Database = {
           id?: string
           likes?: number
           profile_id: string
+          public?: boolean
           title: string
           total_clicks?: number
           url: string
@@ -188,6 +190,7 @@ export type Database = {
           id?: string
           likes?: number
           profile_id?: string
+          public?: boolean
           title?: string
           total_clicks?: number
           url?: string

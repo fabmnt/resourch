@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { SelectMultipleCategories } from './select-multiple-categories'
 import { Tables } from '@/database.types'
 import { createClient } from '@/utils/supabase/client'
+import { Switch } from '@/components/ui/switch'
 
 interface CreateResourceFormProps {
   onSuccess?: () => void
@@ -45,7 +46,7 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
   }, [state])
 
   const hanldeCreateResource = (formData: FormData) => {
-    formData.append('categories', selectedCategoriesIds.join(','))
+    // formData.append('categories', selectedCategoriesIds.join(','))
     formAction(formData)
   }
 
@@ -120,6 +121,17 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
             name='resource-description'
             placeholder='A beautiful content that I has to remember...'
           />
+        </div>
+        <div className='space-y-2 flex justify-end'>
+          <div className='inline-flex items-center gap-2'>
+            <Switch
+              id='public-switch'
+              name='resource-public'
+              value='on'
+              defaultChecked
+            />
+            <Label htmlFor='public-switch'>Public</Label>
+          </div>
         </div>
       </div>
       <Button
