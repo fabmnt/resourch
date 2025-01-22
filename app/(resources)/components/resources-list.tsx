@@ -12,11 +12,13 @@ export async function FeaturedResources({ q }: { q: string }) {
     return redirect('/sign-in')
   }
 
-  const { data: featuredResources, error } = await getFeaturedResources(q)
-  const { data: likedResources } = await supabase
-    .from('liked_resources')
-    .select('*, profile(*)')
-    .eq('profile.user_id', user.id)
+  const { data: profile } = await supabase.from('profile').select('*').eq('user_id', user.id).single()
+  if (profile == null) {
+    return redirect('/sign-in')
+  }
+
+  const { data: featuredResources } = await getFeaturedResources(q)
+  const { data: likedResources } = await supabase.from('liked_resources').select('*').eq('profile_id', profile.id)
 
   const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
 
@@ -55,11 +57,13 @@ export async function RecentResources({ q }: { q: string }) {
     return redirect('/sign-in')
   }
 
-  const { data: userResources, error } = await getUserResources(user.id, q)
-  const { data: likedResources } = await supabase
-    .from('liked_resources')
-    .select('*, profile(*)')
-    .eq('profile.user_id', user.id)
+  const { data: profile } = await supabase.from('profile').select('*').eq('user_id', user.id).single()
+  if (profile == null) {
+    return redirect('/sign-in')
+  }
+
+  const { data: userResources } = await getUserResources(user.id, q)
+  const { data: likedResources } = await supabase.from('liked_resources').select('*').eq('profile_id', profile.id)
 
   const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
 
@@ -95,10 +99,7 @@ export async function SavedResources({ q }: { q: string }) {
     redirect('/sign-in')
   }
 
-  const { data: likedResources } = await supabase
-    .from('liked_resources')
-    .select('*, profile(*)')
-    .eq('profile.user_id', user.id)
+  const { data: likedResources } = await supabase.from('liked_resources').select('*').eq('profile_id', profile.id)
 
   const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
 
