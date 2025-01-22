@@ -74,6 +74,9 @@ export async function RecentResources({ q }: { q: string }) {
           isLiked={likedResourceIds?.includes(resource.id)}
         />
       ))}
+      {userResources?.length === 0 && (
+        <div className='text-center text-neutral-400'>No resources found, create your first resource.</div>
+      )}
     </div>
   )
 }
@@ -124,6 +127,7 @@ export async function SavedResources({ q }: { q: string }) {
           isSaved={savedResourceIds?.includes(resource.id)}
         />
       ))}
+      {savedResources?.length === 0 && <div className='text-center text-neutral-400'>No resources were saved yet.</div>}
     </div>
   )
 }

@@ -39,7 +39,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <main className='min-h-screen w-full'>{children}</main>
+            <main className='min-h-screen'>{children}</main>
             <Suspense>
               <SharedDialog />
               <ShareResourceDialog />
