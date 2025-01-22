@@ -97,13 +97,13 @@ export function CreateResourceForm({ onSuccess, onError }: CreateResourceFormPro
             </button>
           </div>
         </div>
-        <div className='space-y-2'>
+        {/* <div className='space-y-2'>
           <SelectMultipleCategories
             categories={categories}
             selectedCategoriesIds={selectedCategoriesIds}
             onChange={setSelectedCategoriesIds}
           />
-        </div>
+        </div> */}
         <div className='space-y-2'>
           <Label htmlFor='resource-title'>Title (optional)</Label>
           <Input
