@@ -2,15 +2,7 @@
 import { Tables, TablesInsert } from '@/database.types'
 import { getUser } from '../auth/service'
 import { resourceSchema } from './schema'
-import {
-  pinResource,
-  createResource,
-  deleteResource,
-  unpinAllResources,
-  unpinResource,
-  updateResource,
-  addCategoriesToResource,
-} from './service'
+import { createResource, deleteResource, unpinAllResources, unpinResource, addCategoriesToResource } from './service'
 import { revalidatePath } from 'next/cache'
 import { getUrlMetadata } from '../metadata/get-url-metadata'
 import { createClient } from '@/utils/supabase/server'
@@ -103,13 +95,28 @@ export async function deleteResourceAction(resourceId: string) {
 }
 
 export async function addResourceToPinnedAction(resourceId: string) {
-  const { error } = await pinResource(resourceId)
+  const supabase = await createClient()
+  const { data: userData, error: userError } = await getUser()
+  if (userError) {
+    return { error: userError }
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select()
+    .eq('user_id', userData.user.id)
+    .single()
+  if (profileError) {
+    return { error: profileError }
+  }
+
+  const { error } = await supabase.from('pinned_resources').insert({ resource_id: resourceId, profile_id: profile.id })
+
   if (error) {
     return { error: error.message }
   }
 
   revalidatePath('/')
-  return { message: 'success' }
 }
 
 export async function unpinResourceAction(resourceId: string) {

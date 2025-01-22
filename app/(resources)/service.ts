@@ -4,24 +4,19 @@ import { getUser } from '../auth/service'
 
 export async function getUserResources(userId: string, query = '') {
   const supabase = await createClient()
-  const { data, error } = await supabase
+  return await supabase
     .from('resources')
-    .select('*, categories(*), profile(*)')
+    .select('*, profile!resources_profile_id_fkey(*)')
     .eq('user_id', userId)
     .ilike('title', `%${query}%`)
     .order('created_at', { ascending: false })
-
-  if (error) {
-    return { data: null, error }
-  }
-  return { data, error: null }
 }
 
 export async function getFeaturedResources(query = '') {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('resources')
-    .select('*, categories(*), profile(*)')
+    .select('*, profile!resources_profile_id_fkey(*)')
     .ilike('title', `%${query}%`)
     .order('likes', { ascending: false })
     .order('total_clicks', { ascending: false })
@@ -44,42 +39,13 @@ export async function deleteResource(resourceId: string) {
   return await supabase.from('resources').delete().eq('id', resourceId)
 }
 
-export async function pinResource(resourceId: string) {
+export async function getPinnedResources(profileId: string) {
   const supabase = await createClient()
-  const { data: userData, error: userError } = await getUser()
-  if (userError) {
-    return { error: userError }
-  }
-
-  const { error } = await supabase
-    .from('resources')
-    .update({
-      is_pinned: true,
-      pinned_at: new Date().toISOString(),
-    })
-    .eq('id', resourceId)
-    .eq('user_id', userData.user.id)
-
-  if (error) {
-    return { error }
-  }
-
-  return { error: null }
-}
-
-export async function getPinnedResources(userId: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('resources')
-    .select('*, profile(*)')
-    .eq('user_id', userId)
-    .eq('is_pinned', true)
-    .order('pinned_at', { ascending: true })
-
-  if (error) {
-    return { data: null, error }
-  }
-  return { data, error: null }
+  return await supabase
+    .from('pinned_resources')
+    .select('*, profile(*), resources(*, profile!resources_profile_id_fkey(*), categories(*))')
+    .eq('profile_id', profileId)
+    .order('created_at', { ascending: true })
 }
 
 export async function unpinResource(resourceId: string) {
@@ -89,20 +55,25 @@ export async function unpinResource(resourceId: string) {
     return { error: userError }
   }
 
-  const { error } = await supabase
-    .from('resources')
-    .update({
-      is_pinned: false,
-      pinned_at: null,
-    })
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select()
     .eq('user_id', userData.user.id)
-    .eq('id', resourceId)
+    .single()
+  if (profileError) {
+    return { error: profileError }
+  }
 
+  const { error } = await supabase
+    .from('pinned_resources')
+    .delete()
+    .eq('profile_id', profile.id)
+    .eq('resource_id', resourceId)
   if (error) {
     return { error }
   }
 
-  return { error: null }
+  return { message: 'Resource unpinned' }
 }
 
 export async function unpinAllResources() {
@@ -112,19 +83,22 @@ export async function unpinAllResources() {
     return { error: userError }
   }
 
-  const { error } = await supabase
-    .from('resources')
-    .update({
-      is_pinned: false,
-      pinned_at: null,
-    })
+  const { data: profile, error: profileError } = await supabase
+    .from('profile')
+    .select()
     .eq('user_id', userData.user.id)
+    .single()
+  if (profileError) {
+    return { error: profileError }
+  }
+
+  const { error } = await supabase.from('pinned_resources').delete().eq('profile_id', profile.id)
 
   if (error) {
     return { error }
   }
 
-  return { error: null }
+  return { message: 'All resources unpinned' }
 }
 
 export async function updateResource(resource: TablesInsert<'resources'>) {

@@ -33,6 +33,42 @@ export type Database = {
       liked_resources: {
         Row: {
           created_at: string
+          id: number
+          profile_id: string
+          resource_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          profile_id: string
+          resource_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          profile_id?: string
+          resource_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liked_resources_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liked_resources_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pinned_resources: {
+        Row: {
+          created_at: string
           profile_id: string
           resource_id: string
         }
@@ -48,14 +84,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "liked_resources_profile_id_fkey"
+            foreignKeyName: "pinned_resources_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profile"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "liked_resources_resource_id_fkey"
+            foreignKeyName: "pinned_resources_resource_id_fkey"
             columns: ["resource_id"]
             isOneToOne: false
             referencedRelation: "resources"
@@ -126,9 +162,7 @@ export type Database = {
           description: string | null
           icon_url: string
           id: string
-          is_pinned: boolean
           likes: number
-          pinned_at: string | null
           profile_id: string
           title: string
           total_clicks: number
@@ -140,9 +174,7 @@ export type Database = {
           description?: string | null
           icon_url: string
           id?: string
-          is_pinned?: boolean
           likes?: number
-          pinned_at?: string | null
           profile_id: string
           title: string
           total_clicks?: number
@@ -154,9 +186,7 @@ export type Database = {
           description?: string | null
           icon_url?: string
           id?: string
-          is_pinned?: boolean
           likes?: number
-          pinned_at?: string | null
           profile_id?: string
           title?: string
           total_clicks?: number

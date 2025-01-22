@@ -12,8 +12,7 @@ export async function FeaturedResources({ q }: { q: string }) {
     return redirect('/sign-in')
   }
 
-  const { data: featuredResources } = await getFeaturedResources(q)
-
+  const { data: featuredResources, error } = await getFeaturedResources(q)
   const { data: likedResources } = await supabase
     .from('liked_resources')
     .select('*, profile(*)')
@@ -90,12 +89,6 @@ export async function SavedResources({ q }: { q: string }) {
     redirect('/sign-in')
   }
 
-  const { data } = await supabase
-    .from('saved_resources')
-    .select('resources(*, profile(*), categories(*))')
-    .eq('profile_id', profile.id)
-  const resources = data?.map((savedResource) => savedResource.resources)
-
   const { data: likedResources } = await supabase
     .from('liked_resources')
     .select('*, profile(*)')
@@ -103,16 +96,16 @@ export async function SavedResources({ q }: { q: string }) {
 
   const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
 
-  const { data: savedResources } = await supabase
+  const { data } = await supabase
     .from('saved_resources')
-    .select('*, profile(*)')
-    .eq('profile.user_id', user.id)
-
-  const savedResourceIds = savedResources?.map((resource) => resource.resource_id)
+    .select('*, resources(*, profile!resources_profile_id_fkey(*))')
+    .eq('profile_id', profile.id)
+  const savedResources = data?.map((row) => row.resources)
+  const savedResourceIds = data?.map((row) => row.resource_id)
 
   return (
     <div className='flex flex-col gap-4'>
-      {resources?.map((resource) => (
+      {savedResources?.map((resource) => (
         <Resource
           key={resource.id}
           resource={resource}

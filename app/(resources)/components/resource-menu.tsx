@@ -16,17 +16,19 @@ export function ResourceMenu({
   resource,
   ownedByCurrentUser = false,
   isSaved = false,
+  isPinned = false,
 }: {
   resource: Tables<'resources'>
   ownedByCurrentUser?: boolean
   isSaved?: boolean
+  isPinned?: boolean
 }) {
   const router = useRouter()
   const { toast } = useToast()
 
   return (
     <DropdownDots>
-      {!resource.is_pinned && ownedByCurrentUser && (
+      {!isPinned && ownedByCurrentUser && (
         <DropdownMenuItem
           onClick={() => addResourceToPinnedAction(resource.id)}
           className='flex gap-2 items-center'

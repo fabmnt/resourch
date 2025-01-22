@@ -17,6 +17,7 @@ interface ResourceProps {
   isLiked?: boolean
   ownedByCurrentUser?: boolean
   isSaved?: boolean
+  isPinned?: boolean
 }
 export function Resource({
   resource,
@@ -25,6 +26,7 @@ export function Resource({
   isLiked = false,
   ownedByCurrentUser = false,
   isSaved = false,
+  isPinned = false,
 }: ResourceProps) {
   const [optimisticLikes, setOptimisticLikes] = useOptimistic({ total_likes: resource.likes, liked: isLiked })
   const [isHovering, setIsHovering] = useState(false)
@@ -104,6 +106,7 @@ export function Resource({
                   ownedByCurrentUser={ownedByCurrentUser}
                   resource={resource}
                   isSaved={isSaved}
+                  isPinned={isPinned}
                 />
               </div>
             )}
