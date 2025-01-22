@@ -99,12 +99,19 @@ export async function SavedResources({ q }: { q: string }) {
 
   const likedResourceIds = likedResources?.map((resource) => resource.resource_id)
 
-  const { data } = await supabase
-    .from('saved_resources')
-    .select('*, resources(*, profile!resources_profile_id_fkey(*))')
-    .eq('profile_id', profile.id)
-  const savedResources = data?.map((row) => row.resources)
-  const savedResourceIds = data?.map((row) => row.resource_id)
+  const { data: savedResources } = await supabase
+    .from('resources')
+    .select(
+      `
+    *,
+    saved_resources!inner(*, profile(*)),
+    profile!resources_profile_id_fkey(*)
+  `,
+    )
+    .eq('saved_resources.profile_id', profile.id)
+    .ilike('title', `%${q}%`)
+    .order('created_at', { ascending: false })
+  const savedResourceIds = savedResources?.map((row) => row.id)
 
   return (
     <div className='flex flex-col gap-4'>
