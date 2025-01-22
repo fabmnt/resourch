@@ -36,19 +36,18 @@ export function Resource({
   }
 
   const handleLikeResource = async () => {
-    startTransition(() => {
+    startTransition(async () => {
       setOptimisticLikes((prev) => ({
         ...prev,
         isLiked: !prev.liked,
         likes: prev.liked ? prev.total_likes - 1 : prev.total_likes + 1,
       }))
+      if (!optimisticLikes.liked) {
+        await likeResource(resource.id)
+      } else {
+        await unlikeResource(resource.id)
+      }
     })
-
-    if (!optimisticLikes.liked) {
-      likeResource(resource.id)
-    } else {
-      unlikeResource(resource.id)
-    }
   }
 
   return (

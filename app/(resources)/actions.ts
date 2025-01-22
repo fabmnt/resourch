@@ -209,14 +209,13 @@ export async function likeResource(resourceId: string) {
 
   const { error: likedResourceError, data } = await supabase
     .from('liked_resources')
-    .upsert({ resource_id: resourceId, profile_id: profile.id })
+    .insert({ resource_id: resourceId, profile_id: profile.id })
     .select('*, resources(*)')
     .single()
 
   if (likedResourceError) {
     return { error: likedResourceError.message }
   }
-  console.log(data)
 
   const { error } = await supabase
     .from('resources')
