@@ -27,6 +27,8 @@ export async function FeaturedResources({ q }: { q: string }) {
 
   const savedResourceIds = savedResources?.map((resource) => resource.resource_id)
 
+  const { data: pinnedResources } = await supabase.from('pinned_resources').select().eq('profile.user_id', user.id)
+  const pinnedResourceIds = pinnedResources?.map((resource) => resource.resource_id)
   return (
     <div className='flex flex-col gap-4'>
       {featuredResources?.map((resource) => (
@@ -37,6 +39,7 @@ export async function FeaturedResources({ q }: { q: string }) {
           ownedByCurrentUser={resource.profile.user_id === user.id}
           isLiked={likedResourceIds?.includes(resource.id)}
           isSaved={savedResourceIds?.includes(resource.id)}
+          isPinned={pinnedResourceIds?.includes(resource.id)}
         />
       ))}
     </div>

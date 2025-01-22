@@ -28,7 +28,7 @@ export function ResourceMenu({
 
   return (
     <DropdownDots>
-      {!isPinned && ownedByCurrentUser && (
+      {!isPinned && (
         <DropdownMenuItem
           onClick={() => addResourceToPinnedAction(resource.id)}
           className='flex gap-2 items-center'
